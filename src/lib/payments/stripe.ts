@@ -1,13 +1,16 @@
 import Stripe from 'stripe'
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY manquante dans .env.local')
+export function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY
+  if (!key) throw new Error('STRIPE_SECRET_KEY manquante')
+  return new Stripe(key)
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2023-10-16',
-  typescript: true,
-})
+let _stripe: Stripe | null = null
+export function get stripe() {
+  if (!_stripe) _stripe = getStripe()
+  return _stripe
+}
 
 export async function createStripeCheckoutSession({
   orderId,
