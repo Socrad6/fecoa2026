@@ -79,9 +79,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        <style jsx>{`
-          @keyframes fadeUp { to { opacity: 1; transform: translateY(0) } }
-        `}</style>
       </section>
 
       {/* TICKER */}
