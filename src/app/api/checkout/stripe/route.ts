@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { stripe, handleStripeWebhook } from '@/lib/payments/stripe'
+import { getStripeClient, handleStripeWebhook } from '@/lib/payments/stripe'
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const event = stripe.webhooks.constructEvent(
+    const event = getStripeClient().webhooks.constructEvent(
       body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET

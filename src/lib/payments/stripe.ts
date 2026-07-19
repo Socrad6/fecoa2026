@@ -7,7 +7,7 @@ export function getStripe() {
 }
 
 let _stripe: Stripe | null = null
-export function get stripe() {
+export function getStripeClient(): Stripe {
   if (!_stripe) _stripe = getStripe()
   return _stripe
 }
@@ -25,7 +25,7 @@ export async function createStripeCheckoutSession({
   successUrl: string
   cancelUrl: string
 }) {
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripeClient().checkout.sessions.create({
     payment_method_types: ['card'],
     customer_email: email,
     line_items: lineItems.map(item => ({
