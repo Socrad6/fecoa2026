@@ -91,47 +91,47 @@ const badgeStyles: Record<string, string> = {
 
 export default function ProgrammePage() {
   return (
-    <section className="py-[clamp(70px,9vh,128px)] px-[clamp(16px,5vw,80px)] pt-32">
+    <section className="py-[clamp(80px,10vh,140px)] px-[clamp(20px,5vw,80px)] pt-32">
       <div className="max-w-[1400px] mx-auto">
         <span className="eyebrow">Programme</span>
         <h2 className="sec-title">Quatre jours <em>d&apos;exception</em></h2>
-        <p className="text-[clamp(13px,1.4vw,15px)] max-w-[520px] leading-[1.8] mb-4" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-[clamp(14px,1.4vw,16px)] max-w-[520px] leading-[1.8] mb-5" style={{ color: 'var(--text-muted)' }}>
           Un programme dense pour les entrepreneurs, artisans, investisseurs et le grand public.
         </p>
 
-        <div className="flex gap-4 mb-12 flex-wrap">
-          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-[#4ade80]" /><span style={{ color: 'var(--text-muted)' }}>Public</span></span>
-          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-[#60a5fa]" /><span style={{ color: 'var(--text-muted)' }}>Pro / B2B</span></span>
-          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-gold" /><span style={{ color: 'var(--text-muted)' }}>VIP</span></span>
+        <div className="flex gap-5 mb-14 flex-wrap">
+          <span className="flex items-center gap-2.5 text-[10px] tracking-[1px] uppercase"><span className="w-2.5 h-2.5 rounded-full bg-[#4ade80]" /><span style={{ color: 'var(--text-muted)' }}>Public</span></span>
+          <span className="flex items-center gap-2.5 text-[10px] tracking-[1px] uppercase"><span className="w-2.5 h-2.5 rounded-full bg-[#60a5fa]" /><span style={{ color: 'var(--text-muted)' }}>Pro / B2B</span></span>
+          <span className="flex items-center gap-2.5 text-[10px] tracking-[1px] uppercase"><span className="w-2.5 h-2.5 rounded-full bg-gold" /><span style={{ color: 'var(--text-muted)' }}>VIP</span></span>
         </div>
 
         <div className="space-y-0">
           {days.map((day) => (
             <div key={day.date}>
               <div className="flex items-stretch border-b" style={{ borderColor: 'var(--border)' }}>
-                <div className="w-[280px] flex-shrink-0 py-8 pr-8 border-r" style={{ borderColor: 'var(--border)' }}>
-                  <div className="flex items-baseline gap-3 mb-2">
-                    <span className="font-display text-[48px] font-bold leading-none" style={{ color: day.tagColor, opacity: 0.3 }}>{day.num}</span>
+                <div className="w-[280px] flex-shrink-0 py-10 pr-8 border-r" style={{ borderColor: 'var(--border)' }}>
+                  <div className="flex items-baseline gap-3 mb-3">
+                    <span className="font-display text-[52px] font-bold leading-none" style={{ color: day.tagColor, opacity: 0.25 }}>{day.num}</span>
                     <div>
                       <span className="text-[10px] font-bold tracking-[2px] uppercase" style={{ color: 'var(--text-muted)' }}>{day.date} {day.month}</span>
                     </div>
                   </div>
-                  <h3 className="font-display text-[22px] font-bold leading-tight mb-2" style={{ color: 'var(--text-main)' }}>
+                  <h3 className="font-display text-[24px] font-bold leading-tight mb-3" style={{ color: 'var(--text-main)' }}>
                     {day.title}
                     <span className="text-gold-2"> {day.subtitle}</span>
                   </h3>
-                  <span className="inline-block px-2.5 py-0.5 text-[8px] font-bold tracking-[2px] uppercase text-white mb-3" style={{ background: day.tagColor }}>
+                  <span className="inline-block px-3 py-1 text-[8px] font-bold tracking-[2px] uppercase text-white mb-3" style={{ background: day.tagColor }}>
                     {day.tag}
                   </span>
-                  <p className="text-[12px] leading-[1.7]" style={{ color: 'var(--text-muted)' }}>{day.desc}</p>
+                  <p className="text-[13px] leading-[1.7]" style={{ color: 'var(--text-muted)' }}>{day.desc}</p>
                 </div>
 
                 <div className="flex-1">
                   {day.agenda.map((item, i) => (
-                    <div key={i} className="grid grid-cols-[70px_1fr_auto] items-center gap-3 py-3 px-5 border-b last:border-b-0 hover:bg-[rgba(200,155,60,.03)] transition-colors" style={{ borderColor: 'var(--border)' }}>
-                      <b className="text-[11px] font-semibold tracking-[1px] text-gold-2 tabular-nums">{item.time}</b>
-                      <span className="text-[12px] font-light" style={{ color: 'var(--text-main)' }}>{item.text}</span>
-                      <span className={`text-[8px] font-bold tracking-[1px] uppercase px-2 py-0.5 rounded-full whitespace-nowrap ${badgeStyles[item.badgeType]}`}>
+                    <div key={i} className="grid grid-cols-[70px_1fr_auto] items-center gap-4 py-4 px-6 border-b last:border-b-0 hover:bg-[rgba(200,155,60,.03)] transition-colors duration-300" style={{ borderColor: 'var(--border)' }}>
+                      <b className="text-[12px] font-semibold tracking-[1px] text-gold-2 tabular-nums">{item.time}</b>
+                      <span className="text-[13px] font-light" style={{ color: 'var(--text-main)' }}>{item.text}</span>
+                      <span className={`text-[8px] font-bold tracking-[1px] uppercase px-2.5 py-0.5 rounded-full whitespace-nowrap ${badgeStyles[item.badgeType]}`}>
                         {item.badge}
                       </span>
                     </div>

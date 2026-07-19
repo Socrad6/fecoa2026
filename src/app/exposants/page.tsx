@@ -43,53 +43,53 @@ const categories = [
 export default function ExposantsPage() {
   return (
     <>
-      <section className="py-[clamp(70px,9vh,128px)] px-[clamp(16px,5vw,80px)] pt-32" style={{ background: 'var(--bg-2)' }}>
+      <section className="py-[clamp(80px,10vh,140px)] px-[clamp(20px,5vw,80px)] pt-32" style={{ background: 'var(--bg-2)' }}>
         <div className="max-w-[1400px] mx-auto">
           <span className="eyebrow">Exposants</span>
           <h2 className="sec-title">Réservez votre <em>stand</em></h2>
-          <p className="text-[clamp(13px,1.4vw,15px)] max-w-[520px] leading-[1.8] mb-4" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-[clamp(14px,1.4vw,16px)] max-w-[520px] leading-[1.8] mb-5" style={{ color: 'var(--text-muted)' }}>
             Quatre formules pour tous les profils — de l&apos;artisan indépendant au pavillon d&apos;entreprise.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[2px] border" style={{ borderColor: 'var(--border)' }}>
             {stands.map(s => (
-              <div key={s.tier} className={`p-7 relative group ${s.popular ? 'bg-gradient-to-br from-[rgba(14,45,74,.85)] to-[rgba(6,21,36,.85)] border border-[rgba(200,155,60,.2)]' : ''}`} style={!s.popular ? { background: 'var(--bg-2)' } : {}}>
+              <div key={s.tier} className={`p-8 relative group ${s.popular ? 'bg-gradient-to-br from-[rgba(14,45,74,.85)] to-[rgba(6,21,36,.85)] border border-[rgba(200,155,60,.2)]' : ''}`} style={!s.popular ? { background: 'var(--bg-2)' } : {}}>
                 <div className="absolute top-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" style={{ background: s.color }} />
                 {s.popular && (
-                  <span className="absolute top-3 right-3 text-[8px] font-bold tracking-[1.5px] uppercase px-2 py-0.5 text-navy" style={{ background: s.color }}>Le plus choisi</span>
+                  <span className="absolute top-4 right-4 text-[8px] font-bold tracking-[1.5px] uppercase px-2.5 py-0.5 text-navy" style={{ background: s.color }}>Le plus choisi</span>
                 )}
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="w-5 h-px" style={{ background: s.color }} />
+                <div className="flex items-center gap-2.5 mb-4">
+                  <span className="w-6 h-px" style={{ background: s.color }} />
                   <span className="text-[9px] font-bold tracking-[3px] uppercase" style={{ color: s.color }}>{s.tier}</span>
                 </div>
-                <div className="font-display text-[clamp(26px,2.5vw,36px)] font-bold leading-none mb-1" style={{ color: 'var(--text-main)' }}>
-                  {s.price === 'Sur devis' ? <>Sur <small className="text-[12px] font-normal" style={{ color: 'var(--text-muted)' }}>devis</small></> : <>{s.price} <small className="text-[12px] font-normal" style={{ color: 'var(--text-muted)' }}>CAD</small></>}
+                <div className="font-display text-[clamp(28px,2.5vw,38px)] font-bold leading-none mb-1" style={{ color: 'var(--text-main)' }}>
+                  {s.price === 'Sur devis' ? <>Sur <small className="text-[13px] font-normal" style={{ color: 'var(--text-muted)' }}>devis</small></> : <>{s.price} <small className="text-[13px] font-normal" style={{ color: 'var(--text-muted)' }}>CAD</small></>}
                 </div>
-                <p className="text-[11px] my-2 pb-3 border-b" style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}>{s.size}</p>
-                <ul className="mb-5">
+                <p className="text-[12px] my-3 pb-4 border-b" style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}>{s.size}</p>
+                <ul className="mb-6">
                   {s.features.map(f => (
-                    <li key={f} className="text-[11px] py-1.5 flex gap-2.5 items-center" style={{ color: 'var(--text-main)' }}>
+                    <li key={f} className="text-[12px] py-1.5 flex gap-2.5 items-center" style={{ color: 'var(--text-main)' }}>
                       <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: s.color }} />
                       {f}
                     </li>
                   ))}
                 </ul>
-                <Link href="/contact" className="block text-center py-2.5 border transition-all text-[10px] font-semibold tracking-[2px] uppercase hover:text-navy hover:bg-gold" style={{ borderColor: s.color, color: s.color }}>
+                <Link href="/contact" className="block text-center py-3 border transition-all duration-300 text-[10px] font-semibold tracking-[2px] uppercase hover:text-navy hover:bg-gold hover:shadow-[0_4px_16px_rgba(200,155,60,.2)]" style={{ borderColor: s.color, color: s.color }}>
                   {s.price === 'Sur devis' ? 'Nous contacter' : 'Réserver'}
                 </Link>
               </div>
             ))}
           </div>
 
-          <div className="mt-6 flex items-center gap-4 p-4 border flex-wrap" style={{ borderColor: 'var(--border)' }}>
-            <div className="flex items-center gap-2.5 flex-1 min-w-[200px]">
-              <span className="text-[8px] font-bold tracking-[1px] uppercase px-2.5 py-1 bg-gold text-navy">Early Bird</span>
-              <p className="text-[12px]" style={{ color: 'var(--text-main)' }}><strong className="text-gold-2">−15%</strong> avant le <strong>1er Nov 2026</strong></p>
+          <div className="mt-6 flex items-center gap-5 p-5 border flex-wrap" style={{ borderColor: 'var(--border)' }}>
+            <div className="flex items-center gap-3 flex-1 min-w-[220px]">
+              <span className="text-[8px] font-bold tracking-[1px] uppercase px-3 py-1 bg-gold text-navy">Early Bird</span>
+              <p className="text-[13px]" style={{ color: 'var(--text-main)' }}><strong className="text-gold-2">−15%</strong> avant le <strong>1er Nov 2026</strong></p>
             </div>
-            <div className="w-px h-7" style={{ background: 'var(--border)' }} />
-            <div className="flex items-center gap-2.5 flex-1 min-w-[200px]">
-              <span className="text-[8px] font-bold tracking-[1px] uppercase px-2.5 py-1 bg-[#1A7A3C] text-white">Diaspora</span>
-              <p className="text-[12px]" style={{ color: 'var(--text-main)' }}><strong className="text-gold-2">−10%</strong> au Canada <em className="text-[10px]" style={{ color: 'var(--text-muted)' }}>(cumulables)</em></p>
+            <div className="w-px h-8" style={{ background: 'var(--border)' }} />
+            <div className="flex items-center gap-3 flex-1 min-w-[220px]">
+              <span className="text-[8px] font-bold tracking-[1px] uppercase px-3 py-1 bg-[#1A7A3C] text-white">Diaspora</span>
+              <p className="text-[13px]" style={{ color: 'var(--text-main)' }}><strong className="text-gold-2">−10%</strong> au Canada <em className="text-[11px]" style={{ color: 'var(--text-muted)' }}>(cumulables)</em></p>
             </div>
           </div>
         </div>
@@ -102,13 +102,13 @@ export default function ExposantsPage() {
         <span style={{ background: '#1A5276' }} />
       </div>
 
-      <section className="py-[clamp(50px,6vh,80px)] px-[clamp(16px,5vw,80px)]">
+      <section className="py-[clamp(60px,7vh,100px)] px-[clamp(20px,5vw,80px)]">
         <div className="max-w-[1400px] mx-auto">
-          <h3 className="font-display text-[22px] font-bold mb-2" style={{ color: 'var(--text-main)' }}>Secteurs d&apos;activité représentés</h3>
-          <p className="text-[13px] mb-6" style={{ color: 'var(--text-muted)' }}>Les principales industries de l&apos;Afrique de l&apos;Ouest seront présentes.</p>
+          <h3 className="font-display text-[24px] font-bold mb-3" style={{ color: 'var(--text-main)' }}>Secteurs d&apos;activité représentés</h3>
+          <p className="text-[14px] mb-8" style={{ color: 'var(--text-muted)' }}>Les principales industries de l&apos;Afrique de l&apos;Ouest seront présentes.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-[2px]">
             {categories.map(c => (
-              <div key={c} className="px-5 py-3 border text-[12px] hover:border-gold hover:text-gold-2 hover:bg-[rgba(200,155,60,.03)] transition-all cursor-default" style={{ borderColor: 'var(--border)', color: 'var(--text-main)' }}>
+              <div key={c} className="px-6 py-4 border text-[13px] hover:border-gold hover:text-gold-2 hover:bg-[rgba(200,155,60,.03)] transition-all duration-300 cursor-default" style={{ borderColor: 'var(--border)', color: 'var(--text-main)' }}>
                 {c}
               </div>
             ))}
