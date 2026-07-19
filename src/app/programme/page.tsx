@@ -10,7 +10,8 @@ const days = [
     date: '17',
     month: 'Déc',
     num: '01',
-    title: 'Ouverture Officielle\n& Networking',
+    title: 'Ouverture Officielle',
+    subtitle: 'Networking',
     tag: 'Cérémonie',
     tagColor: '#1A5276',
     desc: 'Journée inaugurale en présence des diplomates, élus et représentants des quatre nations.',
@@ -29,7 +30,8 @@ const days = [
     date: '18',
     month: 'Déc',
     num: '02',
-    title: 'Commerce\n& Investissement',
+    title: 'Commerce',
+    subtitle: 'Investissement',
     tag: 'Business',
     tagColor: '#1A7A3C',
     desc: 'Journée dédiée aux échanges commerciaux B2B structurés et aux opportunités d\'investissement.',
@@ -47,7 +49,8 @@ const days = [
     date: '19',
     month: 'Déc',
     num: '03',
-    title: 'Artisanat\n& Savoir-faire',
+    title: 'Artisanat',
+    subtitle: 'Savoir-faire',
     tag: 'Artisanat',
     tagColor: '#7D3C98',
     desc: 'Célébration du génie créatif africain. Défilé de mode avec les créateurs de la diaspora.',
@@ -64,7 +67,8 @@ const days = [
     date: '20',
     month: 'Déc',
     num: '04',
-    title: 'Clôture\n& Partenariats',
+    title: 'Clôture',
+    subtitle: 'Partenariats',
     tag: 'Clôture',
     tagColor: '#C0392B',
     desc: 'Signature des accords, remise des prix FÉCOA 2026 et annonce officielle de la prochaine édition.',
@@ -91,40 +95,52 @@ export default function ProgrammePage() {
       <div className="max-w-[1400px] mx-auto">
         <span className="eyebrow">Programme</span>
         <h2 className="sec-title">Quatre jours <em>d&apos;exception</em></h2>
-        <p className="text-[clamp(13px,1.4vw,15px)] text-muted max-w-[520px] leading-[1.8] mb-12">
+        <p className="text-[clamp(13px,1.4vw,15px)] text-muted max-w-[520px] leading-[1.8] mb-4">
           Un programme dense pour les entrepreneurs, artisans, investisseurs et le grand public.
         </p>
 
-        <div className="space-y-12">
-          {days.map(day => (
-            <div key={day.date} className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-[clamp(28px,5vw,60px)] items-start border-b border-[rgba(200,155,60,.12)] pb-12">
-              <div>
-                <div className="font-display text-[80px] font-bold text-gold opacity-17 leading-[.85] mb-[-14px]">{day.num}</div>
-                <h3 className="font-display text-[26px] font-bold text-white leading-[1.2] mb-3">
-                  {day.title.split('\n').map((line, i) => (
-                    <span key={i}>
-                      {line}
-                      {i === 0 && <br />}
-                      {i === 1 && <span className="text-gold-2"> {line}</span>}
-                    </span>
-                  ))}
-                </h3>
-                <span className="inline-block px-3 py-1 text-[9px] font-bold tracking-[2px] uppercase text-white mb-4" style={{ background: day.tagColor }}>
-                  {day.tag}
-                </span>
-                <p className="text-[13px] text-muted leading-[1.7]">{day.desc}</p>
-              </div>
+        {/* Legend */}
+        <div className="flex gap-4 mb-12 flex-wrap">
+          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-[#4ade80]" /><span className="text-muted">Public</span></span>
+          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-[#60a5fa]" /><span className="text-muted">Pro / B2B</span></span>
+          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-gold" /><span className="text-muted">VIP</span></span>
+        </div>
 
-              <div className="flex flex-col gap-px">
-                {day.agenda.map((item, i) => (
-                  <div key={i} className="grid grid-cols-[82px_1fr_auto] items-center gap-3.5 py-3 px-4 bg-[rgba(255,255,255,.02)] border-l-2 border-transparent hover:bg-[rgba(200,155,60,.05)] hover:border-l-gold transition-all">
-                    <b className="text-[11px] font-semibold tracking-[1px] text-gold-2 tabular-nums">{item.time}</b>
-                    <span className="text-[13px] text-text font-light">{item.text}</span>
-                    <span className={`text-[9px] font-bold tracking-[1px] uppercase px-2 py-0.5 rounded-full whitespace-nowrap ${badgeStyles[item.badgeType]}`}>
-                      {item.badge}
-                    </span>
+        <div className="space-y-0">
+          {days.map((day, dayIndex) => (
+            <div key={day.date}>
+              {/* Day header */}
+              <div className="flex items-stretch border-b border-[rgba(200,155,60,.12)]">
+                {/* Left — Day number + title */}
+                <div className="w-[280px] flex-shrink-0 py-8 pr-8 border-r border-[rgba(200,155,60,.12)]">
+                  <div className="flex items-baseline gap-3 mb-2">
+                    <span className="font-display text-[48px] font-bold leading-none" style={{ color: day.tagColor, opacity: 0.3 }}>{day.num}</span>
+                    <div>
+                      <span className="text-[10px] font-bold tracking-[2px] uppercase text-muted">{day.date} {day.month}</span>
+                    </div>
                   </div>
-                ))}
+                  <h3 className="font-display text-[22px] font-bold text-white leading-tight mb-2">
+                    {day.title}
+                    <span className="text-gold-2"> {day.subtitle}</span>
+                  </h3>
+                  <span className="inline-block px-2.5 py-0.5 text-[8px] font-bold tracking-[2px] uppercase text-white mb-3" style={{ background: day.tagColor }}>
+                    {day.tag}
+                  </span>
+                  <p className="text-[12px] text-muted leading-[1.7]">{day.desc}</p>
+                </div>
+
+                {/* Right — Agenda */}
+                <div className="flex-1">
+                  {day.agenda.map((item, i) => (
+                    <div key={i} className="grid grid-cols-[70px_1fr_auto] items-center gap-3 py-3 px-5 border-b border-[rgba(200,155,60,.04)] last:border-b-0 hover:bg-[rgba(200,155,60,.03)] transition-colors">
+                      <b className="text-[11px] font-semibold tracking-[1px] text-gold-2 tabular-nums">{item.time}</b>
+                      <span className="text-[12px] text-text font-light">{item.text}</span>
+                      <span className={`text-[8px] font-bold tracking-[1px] uppercase px-2 py-0.5 rounded-full whitespace-nowrap ${badgeStyles[item.badgeType]}`}>
+                        {item.badge}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           ))}

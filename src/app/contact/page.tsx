@@ -4,18 +4,18 @@ import { useState } from 'react'
 
 const faqItems = [
   { q: 'Où se déroule la FÉCOA 2026 ?', a: 'La foire aura lieu à Montréal, Québec, Canada. Le lieu exact sera confirmé en mars 2026.' },
-  { q: 'Les billets sont-ils remboursables ?', a: 'Oui, remboursement complet jusqu\'à 7 jours avant l\'événement. Après cette date, les billets ne sont plus remboursables mais transférables.' },
-  { q: 'Comment réserver un stand exposant ?', a: 'Remplissez le formulaire sur la page Exposants ou contactez-nous à inscriptions@fecoa2026.ca. Réponse sous 7 jours.' },
-  { q: 'Y a-t-il un parking sur place ?', a: 'Les informations pratiques (parking, transport en commun, hébergement) seront communiquées après confirmation du lieu.' },
-  { q: 'Puis-je participer plusieurs jours ?', a: 'Oui ! Le forfait 4 jours (55 CAD) vous donne accès à toutes les journées. Des réductions sont disponibles pour les groupes de 10+.' },
-  { q: 'Les billets enfants sont-ils obligatoires ?', a: 'Les enfants de moins de 5 ans entrent gratuitement. Les 5-12 ans bénéficient du tarif réduit de 8 CAD.' },
+  { q: 'Les billets sont-ils remboursables ?', a: "Oui, remboursement complet jusqu'à 7 jours avant l'événement. Après cette date, les billets ne sont plus remboursables mais transférables." },
+  { q: 'Comment réserver un stand exposant ?', a: "Remplissez le formulaire ci-dessous ou contactez-nous à inscriptions@fecoa2026.ca. Réponse sous 7 jours." },
+  { q: 'Y a-t-il un parking sur place ?', a: "Les informations pratiques (parking, transport en commun, hébergement) seront communiquées après confirmation du lieu." },
+  { q: 'Puis-je participer plusieurs jours ?', a: "Oui ! Le forfait 4 jours (55 CAD) vous donne accès à toutes les journées. Des réductions sont disponibles pour les groupes de 10+." },
+  { q: 'Les billets enfants sont-ils obligatoires ?', a: "Les enfants de moins de 5 ans entrent gratuitement. Les 5-12 ans bénéficient du tarif réduit de 8 CAD." },
 ]
 
 const contactInfo = [
-  { label: 'Général', value: 'info@fecoa2026.ca', href: 'mailto:info@fecoa2026.ca' },
-  { label: 'Exposants', value: 'inscriptions@fecoa2026.ca', href: 'mailto:inscriptions@fecoa2026.ca' },
-  { label: 'Sponsors', value: 'sponsors@fecoa2026.ca', href: 'mailto:sponsors@fecoa2026.ca' },
-  { label: 'Presse', value: 'presse@fecoa2026.ca', href: 'mailto:presse@fecoa2026.ca' },
+  { label: 'Général', value: 'info@fecoa2026.ca', href: 'mailto:info@fecoa2026.ca', icon: '✉' },
+  { label: 'Exposants', value: 'inscriptions@fecoa2026.ca', href: 'mailto:inscriptions@fecoa2026.ca', icon: '🏪' },
+  { label: 'Sponsors', value: 'sponsors@fecoa2026.ca', href: 'mailto:sponsors@fecoa2026.ca', icon: '🤝' },
+  { label: 'Presse', value: 'presse@fecoa2026.ca', href: 'mailto:presse@fecoa2026.ca', icon: '📰' },
 ]
 
 export default function ContactPage() {
@@ -23,54 +23,64 @@ export default function ContactPage() {
   const [sent, setSent] = useState(false)
 
   return (
-    <section className="py-[clamp(70px,9vh,128px)] px-[clamp(16px,5vw,80px)] pt-32 bg-navy-2">
+    <section className="py-[clamp(70px,9vh,128px)] px-[clamp(16px,5vw,80px)] pt-32">
       <div className="max-w-[1400px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(36px,6vw,76px)]">
-          {/* Contact info */}
+        <span className="eyebrow">Contact</span>
+        <h2 className="sec-title">Nous <em>contacter</em></h2>
+
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-[clamp(36px,6vw,76px)]">
+          {/* Left — Contact info */}
           <div>
-            <span className="eyebrow">Contact</span>
-            <h2 className="sec-title">Nous <em>contacter</em></h2>
-
-            <div className="space-y-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
               {contactInfo.map(ci => (
-                <div key={ci.label}>
+                <a key={ci.label} href={ci.href} className="block p-5 border border-[rgba(200,155,60,.08)] hover:border-[rgba(200,155,60,.2)] hover:bg-[rgba(200,155,60,.03)] transition-all group">
+                  <span className="text-lg mb-2 block">{ci.icon}</span>
                   <span className="block text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-1">{ci.label}</span>
-                  <a href={ci.href} className="text-[14px] text-text hover:text-gold-2 transition-colors leading-relaxed">{ci.value}</a>
-                </div>
-              ))}
-              <div>
-                <span className="block text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-1">Téléphone</span>
-                <span className="text-[14px] text-text">+1 (514) xxx-xxxx</span>
-              </div>
-              <div>
-                <span className="block text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-1">Lieu</span>
-                <span className="text-[14px] text-text leading-relaxed">Montréal, Québec, Canada<br /><span className="text-[12px] text-muted">Lieu confirmé mars 2026</span></span>
-              </div>
-            </div>
-
-            {/* Social links */}
-            <div className="flex gap-2 flex-wrap">
-              {['Facebook', 'Instagram', 'LinkedIn', 'YouTube', 'TikTok'].map(s => (
-                <a key={s} href="#" className="w-9 h-9 border border-[rgba(200,155,60,.12)] flex items-center justify-center text-muted hover:border-gold hover:text-gold-2 hover:bg-[rgba(200,155,60,.07)] transition-all text-[11px]">
-                  {s.slice(0, 2)}
+                  <span className="text-[13px] text-text group-hover:text-gold-2 transition-colors leading-relaxed">{ci.value}</span>
                 </a>
               ))}
             </div>
+
+            <div className="space-y-4 mb-8">
+              <div className="p-5 border border-[rgba(200,155,60,.08)]">
+                <span className="block text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-1">Téléphone</span>
+                <span className="text-[13px] text-text">+1 (514) xxx-xxxx</span>
+              </div>
+              <div className="p-5 border border-[rgba(200,155,60,.08)]">
+                <span className="block text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-1">Lieu</span>
+                <span className="text-[13px] text-text leading-relaxed">Montréal, Québec, Canada</span>
+                <span className="block text-[11px] text-muted mt-0.5">Lieu confirmé mars 2026</span>
+              </div>
+            </div>
+
+            {/* Social */}
+            <div>
+              <span className="text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-3 block">Suivez-nous</span>
+              <div className="flex gap-2 flex-wrap">
+                {['Facebook', 'Instagram', 'LinkedIn', 'YouTube', 'TikTok'].map(s => (
+                  <a key={s} href="#" className="w-10 h-10 border border-[rgba(200,155,60,.12)] flex items-center justify-center text-muted hover:border-gold hover:text-gold-2 hover:bg-[rgba(200,155,60,.07)] transition-all text-[11px]">
+                    {s.slice(0, 2)}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
 
-          {/* Contact form */}
+          {/* Right — Contact form */}
           <div>
             {sent ? (
-              <div className="text-center py-16">
+              <div className="text-center py-20 border border-[rgba(200,155,60,.08)]">
                 <div className="w-14 h-14 rounded-full border-2 border-gold flex items-center justify-center mx-auto mb-4">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C89B3C" strokeWidth="2"><path d="M5 12l5 5L20 7" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </div>
-                <h3 className="font-display text-2xl text-white mb-2">Message envoyé !</h3>
-                <p className="text-[14px] text-muted">Nous vous répondrons dans les plus brefs délais.</p>
+                <h3 className="font-display text-[22px] text-white mb-2">Message envoyé !</h3>
+                <p className="text-[13px] text-muted">Nous vous répondrons dans les plus brefs délais.</p>
+                <button onClick={() => setSent(false)} className="text-gold-2 text-[11px] font-semibold tracking-[1px] uppercase mt-6 hover:underline">Envoyer un autre message</button>
               </div>
             ) : (
-              <form onSubmit={e => { e.preventDefault(); setSent(true) }} className="bg-navy border border-[rgba(200,155,60,.12)] p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <form onSubmit={e => { e.preventDefault(); setSent(true) }} className="border border-[rgba(200,155,60,.08)] p-7">
+                <h3 className="text-[11px] font-bold tracking-[2px] uppercase text-gold-2 mb-5">Envoyez-nous un message</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-semibold tracking-[2px] uppercase text-muted">Nom *</label>
                     <input type="text" required placeholder="Votre nom" className="bg-[rgba(255,255,255,.04)] border border-[rgba(200,155,60,.13)] text-text px-3.5 py-3 text-sm outline-none focus:border-gold transition-colors" />
@@ -102,22 +112,28 @@ export default function ContactPage() {
 
         {/* FAQ */}
         <div className="mt-20 max-w-[800px] mx-auto">
+          <div className="section-divider mb-10">
+            <span style={{ background: '#C89B3C' }} />
+            <span style={{ background: '#C0392B' }} />
+            <span style={{ background: '#1A7A3C' }} />
+            <span style={{ background: '#1A5276' }} />
+          </div>
           <div className="text-center mb-10">
             <span className="eyebrow justify-center">Questions fréquentes</span>
             <h2 className="sec-title text-center">FAQ</h2>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-[2px]">
             {faqItems.map((item, i) => (
               <div key={i} className="border border-[rgba(200,155,60,.08)]">
                 <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full flex items-center justify-between p-5 text-left bg-transparent text-text hover:bg-[rgba(200,155,60,.03)] transition-colors">
-                  <span className="text-[14px] font-medium">{item.q}</span>
-                  <span className="text-gold text-xl ml-4">{openFaq === i ? '−' : '+'}</span>
+                  <span className="text-[13px] font-medium">{item.q}</span>
+                  <span className={`text-xl ml-4 transition-transform duration-200 ${openFaq === i ? 'text-gold rotate-0' : 'text-muted'}`}>{openFaq === i ? '−' : '+'}</span>
                 </button>
-                {openFaq === i && (
-                  <div className="px-5 pb-5 text-[13px] text-muted leading-relaxed border-t border-[rgba(200,155,60,.06)] pt-3">
+                <div className={`overflow-hidden transition-all duration-300 ${openFaq === i ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                  <div className="px-5 pb-5 text-[12px] text-muted leading-relaxed border-t border-[rgba(200,155,60,.06)] pt-3">
                     {item.a}
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>

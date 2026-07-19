@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import HeroCanvas from '@/components/home/HeroCanvas'
 import Ticker from '@/components/home/Ticker'
 import Countdown from '@/components/ui/Countdown'
@@ -19,12 +18,12 @@ const pillars = [
 ]
 
 const stats = [
-  { num: 5000, suffix: '+', label: 'Visiteurs attendus', color: '#C89B3C', span: 'col-span-2' },
-  { num: 250, suffix: '+', label: 'Exposants', color: '#1A5276', span: '' },
-  { num: 500, suffix: '+', label: 'Rencontres B2B', color: '#1A7A3C', span: '' },
-  { num: 4, suffix: '', label: 'Nations', color: '#C0392B', span: '' },
-  { num: 4, suffix: '', label: 'Jours — 17–20 Déc 2026', color: '#7D3C98', span: 'col-span-2' },
-  { num: 50, suffix: '+', label: 'Conférences', color: '#E67E22', span: '' },
+  { num: 5000, suffix: '+', label: 'Visiteurs', color: '#C89B3C' },
+  { num: 250, suffix: '+', label: 'Exposants', color: '#1A5276' },
+  { num: 500, suffix: '+', label: 'Rencontres B2B', color: '#1A7A3C' },
+  { num: 4, suffix: '', label: 'Nations', color: '#C0392B' },
+  { num: 50, suffix: '+', label: 'Conférences', color: '#E67E22' },
+  { num: 4, suffix: '', label: 'Jours', color: '#7D3C98' },
 ]
 
 export default function HomePage() {
@@ -78,7 +77,6 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-
       </section>
 
       {/* TICKER */}
@@ -87,10 +85,18 @@ export default function HomePage() {
       {/* COUNTDOWN */}
       <Countdown />
 
+      {/* KENTE DIVIDER */}
+      <div className="section-divider">
+        <span style={{ background: '#C89B3C' }} />
+        <span style={{ background: '#C0392B' }} />
+        <span style={{ background: '#1A7A3C' }} />
+        <span style={{ background: '#1A5276' }} />
+      </div>
+
       {/* ABOUT */}
       <section id="about" className="bg-navy-2 py-[clamp(70px,9vh,128px)] px-[clamp(16px,5vw,80px)]">
         <div className="max-w-[1400px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(36px,6vw,96px)] items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(36px,6vw,96px)] items-start">
             <div>
               <span className="eyebrow">L&apos;événement</span>
               <h2 className="sec-title">Un pont entre <em>deux continents</em></h2>
@@ -101,15 +107,16 @@ export default function HomePage() {
                 Pendant quatre jours, Montréal devient le carrefour des échanges entre l&apos;Afrique de l&apos;Ouest et le Canada — un espace de commerce, de dialogue et de célébration culturelle ouvert à tous.
               </p>
 
-              <div className="flex flex-col border-l border-[rgba(200,155,60,.12)]">
+              {/* Pillars */}
+              <div className="space-y-0 border-l border-[rgba(200,155,60,.12)]">
                 {pillars.map(p => (
-                  <div key={p.title} className="flex items-start gap-3.5 py-4 px-5 border-b border-[rgba(200,155,60,.06)] hover:bg-[rgba(200,155,60,.04)] transition-all border-l-3 border-l-transparent hover:border-l-gold">
-                    <div className="w-[34px] h-[34px] rounded-full border flex items-center justify-center flex-shrink-0 text-sm" style={{ borderColor: p.color, color: p.color }}>
+                  <div key={p.title} className="flex items-start gap-4 py-4 px-5 border-b border-[rgba(200,155,60,.06)] hover:bg-[rgba(200,155,60,.04)] transition-all border-l-3 border-l-transparent hover:border-l-gold">
+                    <div className="w-[36px] h-[36px] rounded-full border flex items-center justify-center flex-shrink-0 text-sm" style={{ borderColor: p.color, color: p.color }}>
                       {p.icon}
                     </div>
                     <div>
-                      <strong className="block text-xs font-semibold text-gold-2 mb-0.5">{p.title}</strong>
-                      <span className="text-xs text-muted">{p.desc}</span>
+                      <strong className="block text-[11px] font-semibold text-gold-2 mb-1">{p.title}</strong>
+                      <span className="text-[12px] text-muted leading-relaxed">{p.desc}</span>
                     </div>
                   </div>
                 ))}
@@ -121,15 +128,15 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-[2px]">
+            {/* Stats — grille propre 2x3 */}
+            <div className="grid grid-cols-2 gap-[2px]">
               {stats.map(s => (
-                <div key={s.label} className={`bg-navy-3 p-[clamp(18px,2.5vw,30px)] relative overflow-hidden group cursor-default ${s.span === 'col-span-2' ? 'col-span-2' : ''}`}>
+                <div key={s.label} className="bg-navy-3 p-[clamp(18px,2.5vw,28px)] relative overflow-hidden group cursor-default">
                   <div className="absolute top-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" style={{ background: s.color }} />
-                  <span className="block font-display text-[clamp(34px,4vw,50px)] font-bold leading-none" style={{ color: s.color }}>
+                  <span className="block font-display text-[clamp(28px,3.5vw,44px)] font-bold leading-none" style={{ color: s.color }}>
                     {s.num.toLocaleString()}{s.suffix}
                   </span>
-                  <small className="block text-[11px] font-medium tracking-[1px] text-muted uppercase mt-1.5">{s.label}</small>
+                  <small className="block text-[10px] font-medium tracking-[1px] text-muted uppercase mt-1.5">{s.label}</small>
                 </div>
               ))}
             </div>
@@ -137,13 +144,21 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* KENTE DIVIDER */}
+      <div className="section-divider">
+        <span style={{ background: '#1A7A3C' }} />
+        <span style={{ background: '#C89B3C' }} />
+        <span style={{ background: '#1A5276' }} />
+        <span style={{ background: '#C0392B' }} />
+      </div>
+
       {/* CTA */}
       <section className="py-[clamp(60px,8vh,120px)] px-[clamp(16px,5vw,80px)] text-center">
         <div className="max-w-[700px] mx-auto">
           <span className="eyebrow justify-center">Rejoignez-nous</span>
           <h2 className="sec-title text-center">Prêt à participer à <em>la FÉCOA 2026</em> ?</h2>
           <p className="text-[clamp(13px,1.4vw,15px)] text-muted mb-8 leading-relaxed">
-            Réservez votre billet dès maintenant ou découvrez les opportunites d&apos;exposition et de sponsoring.
+            Réservez votre billet dès maintenant ou découvrez les opportunités d&apos;exposition et de sponsoring.
           </p>
           <div className="flex gap-3.5 justify-center flex-wrap">
             <Link href="/billetterie" className="btn-gold">Acheter un billet</Link>
