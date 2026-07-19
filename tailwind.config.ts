@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
+  darkMode: 'class',
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -24,6 +25,14 @@ const config: Config = {
         canada: '#D52B1E',
         text: '#D8D0C2',
         muted: '#7A8FA8',
+        surface: {
+          DEFAULT: '#0a1f35',
+          2: '#061524',
+          3: '#0d2d4a',
+          light: '#f5f3ef',
+          'light-2': '#ebe8e2',
+          'light-3': '#e0ddd6',
+        },
       },
       fontFamily: {
         display: ['Cormorant Garamond', 'Georgia', 'serif'],

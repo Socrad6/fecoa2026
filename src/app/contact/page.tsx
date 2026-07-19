@@ -30,36 +30,34 @@ export default function ContactPage() {
         <h2 className="sec-title">Nous <em>contacter</em></h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-[clamp(36px,6vw,76px)]">
-          {/* Left — Contact info */}
           <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
               {contactInfo.map(ci => (
-                <a key={ci.label} href={ci.href} className="block p-5 border border-[rgba(200,155,60,.08)] hover:border-[rgba(200,155,60,.2)] hover:bg-[rgba(200,155,60,.03)] transition-all group">
+                <a key={ci.label} href={ci.href} className="block p-5 border hover:border-gold/30 hover:bg-[rgba(200,155,60,.03)] transition-all group" style={{ borderColor: 'var(--border)' }}>
                   <span className="text-lg mb-2 block">{ci.icon}</span>
                   <span className="block text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-1">{ci.label}</span>
-                  <span className="text-[13px] text-text group-hover:text-gold-2 transition-colors leading-relaxed">{ci.value}</span>
+                  <span className="text-[13px] group-hover:text-gold-2 transition-colors leading-relaxed" style={{ color: 'var(--text-main)' }}>{ci.value}</span>
                 </a>
               ))}
             </div>
 
             <div className="space-y-4 mb-8">
-              <div className="p-5 border border-[rgba(200,155,60,.08)]">
+              <div className="p-5 border" style={{ borderColor: 'var(--border)' }}>
                 <span className="block text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-1">Téléphone</span>
-                <span className="text-[13px] text-text">{SITE.phone}</span>
+                <span className="text-[13px]" style={{ color: 'var(--text-main)' }}>{SITE.phone}</span>
               </div>
-              <div className="p-5 border border-[rgba(200,155,60,.08)]">
+              <div className="p-5 border" style={{ borderColor: 'var(--border)' }}>
                 <span className="block text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-1">Lieu</span>
-                <span className="text-[13px] text-text leading-relaxed">Montréal, Québec, Canada</span>
-                <span className="block text-[11px] text-muted mt-0.5">Lieu confirmé mars 2026</span>
+                <span className="text-[13px] leading-relaxed" style={{ color: 'var(--text-main)' }}>Montréal, Québec, Canada</span>
+                <span className="block text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>Lieu confirmé mars 2026</span>
               </div>
             </div>
 
-            {/* Social */}
             <div>
               <span className="text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-3 block">Suivez-nous</span>
               <div className="flex gap-2 flex-wrap">
                 {Object.entries(SITE.social).map(([platform, url]) => (
-                  <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-[rgba(200,155,60,.12)] flex items-center justify-center text-muted hover:border-gold hover:text-gold-2 hover:bg-[rgba(200,155,60,.07)] transition-all text-[11px] uppercase">
+                  <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border flex items-center justify-center hover:border-gold hover:text-gold-2 hover:bg-[rgba(200,155,60,.07)] transition-all text-[11px] uppercase" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
                     {platform.slice(0, 2)}
                   </a>
                 ))}
@@ -67,33 +65,32 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Right — Contact form */}
           <div>
             {sent ? (
-              <div className="text-center py-20 border border-[rgba(200,155,60,.08)]">
+              <div className="text-center py-20 border" style={{ borderColor: 'var(--border)' }}>
                 <div className="w-14 h-14 rounded-full border-2 border-gold flex items-center justify-center mx-auto mb-4">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C89B3C" strokeWidth="2"><path d="M5 12l5 5L20 7" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </div>
-                <h3 className="font-display text-[22px] text-white mb-2">Message envoyé !</h3>
-                <p className="text-[13px] text-muted">Nous vous répondrons dans les plus brefs délais.</p>
+                <h3 className="font-display text-[22px] mb-2" style={{ color: 'var(--text-main)' }}>Message envoyé !</h3>
+                <p className="text-[13px]" style={{ color: 'var(--text-muted)' }}>Nous vous répondrons dans les plus brefs délais.</p>
                 <button onClick={() => setSent(false)} className="text-gold-2 text-[11px] font-semibold tracking-[1px] uppercase mt-6 hover:underline">Envoyer un autre message</button>
               </div>
             ) : (
-              <form onSubmit={e => { e.preventDefault(); setSent(true) }} className="border border-[rgba(200,155,60,.08)] p-7">
+              <form onSubmit={e => { e.preventDefault(); setSent(true) }} className="border p-7" style={{ borderColor: 'var(--border)' }}>
                 <h3 className="text-[11px] font-bold tracking-[2px] uppercase text-gold-2 mb-5">Envoyez-nous un message</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-semibold tracking-[2px] uppercase text-muted">Nom *</label>
-                    <input type="text" required placeholder="Votre nom" className="bg-[rgba(255,255,255,.04)] border border-[rgba(200,155,60,.13)] text-text px-3.5 py-3 text-sm outline-none focus:border-gold transition-colors" />
+                    <label className="text-[10px] font-semibold tracking-[2px] uppercase" style={{ color: 'var(--text-muted)' }}>Nom *</label>
+                    <input type="text" required placeholder="Votre nom" className="border text-sm px-3.5 py-3 outline-none focus:border-gold transition-colors" style={{ background: 'var(--bg-3)', borderColor: 'var(--border)', color: 'var(--text-main)' }} />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-semibold tracking-[2px] uppercase text-muted">Courriel *</label>
-                    <input type="email" required placeholder="votre@email.com" className="bg-[rgba(255,255,255,.04)] border border-[rgba(200,155,60,.13)] text-text px-3.5 py-3 text-sm outline-none focus:border-gold transition-colors" />
+                    <label className="text-[10px] font-semibold tracking-[2px] uppercase" style={{ color: 'var(--text-muted)' }}>Courriel *</label>
+                    <input type="email" required placeholder="votre@email.com" className="border text-sm px-3.5 py-3 outline-none focus:border-gold transition-colors" style={{ background: 'var(--bg-3)', borderColor: 'var(--border)', color: 'var(--text-main)' }} />
                   </div>
                 </div>
                 <div className="flex flex-col gap-1.5 mb-4">
-                  <label className="text-[10px] font-semibold tracking-[2px] uppercase text-muted">Objet</label>
-                  <select className="bg-[rgba(255,255,255,.04)] border border-[rgba(200,155,60,.13)] text-text px-3.5 py-3 text-sm outline-none focus:border-gold transition-colors cursor-pointer">
+                  <label className="text-[10px] font-semibold tracking-[2px] uppercase" style={{ color: 'var(--text-muted)' }}>Objet</label>
+                  <select className="border text-sm px-3.5 py-3 outline-none focus:border-gold transition-colors cursor-pointer" style={{ background: 'var(--bg-3)', borderColor: 'var(--border)', color: 'var(--text-main)' }}>
                     <option>Renseignements généraux</option>
                     <option>Inscription exposant</option>
                     <option>Sponsoring</option>
@@ -102,8 +99,8 @@ export default function ContactPage() {
                   </select>
                 </div>
                 <div className="flex flex-col gap-1.5 mb-6">
-                  <label className="text-[10px] font-semibold tracking-[2px] uppercase text-muted">Message *</label>
-                  <textarea required placeholder="Votre message..." rows={5} className="bg-[rgba(255,255,255,.04)] border border-[rgba(200,155,60,.13)] text-text px-3.5 py-3 text-sm outline-none focus:border-gold transition-colors resize-y" />
+                  <label className="text-[10px] font-semibold tracking-[2px] uppercase" style={{ color: 'var(--text-muted)' }}>Message *</label>
+                  <textarea required placeholder="Votre message..." rows={5} className="border text-sm px-3.5 py-3 outline-none focus:border-gold transition-colors resize-y" style={{ background: 'var(--bg-3)', borderColor: 'var(--border)', color: 'var(--text-main)' }} />
                 </div>
                 <button type="submit" className="btn-gold w-full justify-center">Envoyer le message</button>
               </form>
@@ -111,7 +108,6 @@ export default function ContactPage() {
           </div>
         </div>
 
-        {/* FAQ */}
         <div className="mt-20 max-w-[800px] mx-auto">
           <div className="section-divider mb-10">
             <span style={{ background: '#C89B3C' }} />
@@ -125,13 +121,13 @@ export default function ContactPage() {
           </div>
           <div className="space-y-[2px]">
             {faqItems.map((item, i) => (
-              <div key={i} className="border border-[rgba(200,155,60,.08)]">
-                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full flex items-center justify-between p-5 text-left bg-transparent text-text hover:bg-[rgba(200,155,60,.03)] transition-colors">
+              <div key={i} className="border" style={{ borderColor: 'var(--border)' }}>
+                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full flex items-center justify-between p-5 text-left bg-transparent hover:bg-[rgba(200,155,60,.03)] transition-colors" style={{ color: 'var(--text-main)' }}>
                   <span className="text-[13px] font-medium">{item.q}</span>
-                  <span className={`text-xl ml-4 transition-transform duration-200 ${openFaq === i ? 'text-gold rotate-0' : 'text-muted'}`}>{openFaq === i ? '−' : '+'}</span>
+                  <span className={`text-xl ml-4 transition-transform duration-200 ${openFaq === i ? 'text-gold rotate-0' : ''}`} style={openFaq !== i ? { color: 'var(--text-muted)' } : {}}>{openFaq === i ? '−' : '+'}</span>
                 </button>
                 <div className={`overflow-hidden transition-all duration-300 ${openFaq === i ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                  <div className="px-5 pb-5 text-[12px] text-muted leading-relaxed border-t border-[rgba(200,155,60,.06)] pt-3">
+                  <div className="px-5 pb-5 text-[12px] leading-relaxed border-t pt-3" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
                     {item.a}
                   </div>
                 </div>

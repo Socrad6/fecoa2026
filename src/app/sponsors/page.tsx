@@ -61,25 +61,24 @@ export default function SponsorsPage() {
         <div className="max-w-[1400px] mx-auto">
           <span className="eyebrow">Sponsors</span>
           <h2 className="sec-title">Devenez partenaire <em>officiel</em></h2>
-          <p className="text-[clamp(13px,1.4vw,15px)] text-muted max-w-[520px] leading-[1.8] mb-4">
+          <p className="text-[clamp(13px,1.4vw,15px)] max-w-[520px] leading-[1.8] mb-4" style={{ color: 'var(--text-muted)' }}>
             500 000 consommateurs africains au Canada, visibilité internationale et engagement RSE mesurable.
           </p>
 
-          {/* Packages grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[2px] bg-[rgba(200,155,60,.12)] border border-[rgba(200,155,60,.12)] mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[2px] border mb-6" style={{ borderColor: 'var(--border)' }}>
             {packages.map(pkg => (
-              <div key={pkg.name} className={`bg-navy-2 p-7 relative group ${pkg.featured ? 'bg-gradient-to-br from-[rgba(14,45,74,.9)] to-[rgba(6,21,36,.9)] border border-[rgba(200,155,60,.2)]' : ''}`}>
+              <div key={pkg.name} className={`p-7 relative group ${pkg.featured ? 'bg-gradient-to-br from-[rgba(14,45,74,.9)] to-[rgba(6,21,36,.9)] border border-[rgba(200,155,60,.2)]' : ''}`} style={!pkg.featured ? { background: 'var(--bg-2)' } : {}}>
                 <div className="absolute top-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" style={{ background: pkg.color }} />
                 {pkg.featured && (
                   <span className="absolute top-3 right-3 text-[8px] font-bold tracking-[1.5px] uppercase px-2 py-0.5 text-navy" style={{ background: pkg.color }}>Recommandé</span>
                 )}
-                <div className="font-display text-xl font-bold text-white mb-1">{pkg.name}</div>
+                <div className="font-display text-xl font-bold mb-1" style={{ color: 'var(--text-main)' }}>{pkg.name}</div>
                 <div className="font-display text-[clamp(24px,2.5vw,32px)] font-bold leading-none mb-5" style={{ color: pkg.color }}>
-                  {pkg.price} <small className="text-[12px] text-muted font-normal">CAD</small>
+                  {pkg.price} <small className="text-[12px] font-normal" style={{ color: 'var(--text-muted)' }}>CAD</small>
                 </div>
                 <div className="mb-5">
                   {pkg.features.map(f => (
-                    <div key={f.text} className={`text-[11px] py-1.5 border-b border-[rgba(255,255,255,.03)] flex gap-2 items-center ${f.included ? 'text-text' : 'text-muted opacity-28'}`}>
+                    <div key={f.text} className={`text-[11px] py-1.5 border-b flex gap-2 items-center ${f.included ? '' : 'opacity-28'}`} style={{ borderColor: 'var(--border)', color: f.included ? 'var(--text-main)' : 'var(--text-muted)' }}>
                       <span className={f.included ? 'text-gold-2 font-bold' : ''}>{f.included ? '✓' : '—'}</span>
                       {f.text}
                     </div>
@@ -92,23 +91,22 @@ export default function SponsorsPage() {
             ))}
           </div>
 
-          {/* Available slots */}
           <div className="space-y-6">
             <div>
-              <p className="text-[10px] font-semibold tracking-[3px] uppercase text-muted mb-3">Sponsors Platine — {availableSlots.platine} places disponibles</p>
+              <p className="text-[10px] font-semibold tracking-[3px] uppercase mb-3" style={{ color: 'var(--text-muted)' }}>Sponsors Platine — {availableSlots.platine} places disponibles</p>
               <div className="flex gap-[2px]">
                 {Array.from({ length: availableSlots.platine }).map((_, i) => (
-                  <div key={i} className="flex-1 min-w-[120px] h-[72px] bg-navy-2 border border-dashed border-[rgba(200,155,60,.16)] flex items-center justify-center text-[11px] font-medium tracking-[1.5px] text-[rgba(200,155,60,.2)] cursor-pointer hover:bg-[rgba(200,155,60,.04)] hover:text-gold-2 hover:border-gold transition-all">
+                  <div key={i} className="flex-1 min-w-[120px] h-[72px] border border-dashed flex items-center justify-center text-[11px] font-medium tracking-[1.5px] cursor-pointer hover:bg-[rgba(200,155,60,.04)] hover:text-gold-2 hover:border-gold transition-all" style={{ background: 'var(--bg-2)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
                     + Votre logo ici
                   </div>
                 ))}
               </div>
             </div>
             <div>
-              <p className="text-[10px] font-semibold tracking-[3px] uppercase text-muted mb-3">Sponsors Or — {availableSlots.or} places disponibles</p>
+              <p className="text-[10px] font-semibold tracking-[3px] uppercase mb-3" style={{ color: 'var(--text-muted)' }}>Sponsors Or — {availableSlots.or} places disponibles</p>
               <div className="flex gap-[2px]">
                 {Array.from({ length: availableSlots.or }).map((_, i) => (
-                  <div key={i} className="flex-1 min-w-[120px] h-[72px] bg-navy-2 border border-dashed border-[rgba(200,155,60,.16)] flex items-center justify-center text-[11px] font-medium tracking-[1.5px] text-[rgba(200,155,60,.2)] cursor-pointer hover:bg-[rgba(200,155,60,.04)] hover:text-gold-2 hover:border-gold transition-all">
+                  <div key={i} className="flex-1 min-w-[120px] h-[72px] border border-dashed flex items-center justify-center text-[11px] font-medium tracking-[1.5px] cursor-pointer hover:bg-[rgba(200,155,60,.04)] hover:text-gold-2 hover:border-gold transition-all" style={{ background: 'var(--bg-2)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
                     + Votre logo
                   </div>
                 ))}

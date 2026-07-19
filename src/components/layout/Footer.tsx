@@ -6,7 +6,7 @@ const kenteColors = ['#C89B3C', '#C0392B', '#1A7A3C', '#1A5276']
 
 export default function Footer() {
   return (
-    <footer className="bg-navy border-t border-[rgba(200,155,60,.12)]">
+    <footer className="border-t" style={{ background: 'var(--bg)', borderColor: 'var(--border)' }}>
       <div className="kente-bar">
         {kenteColors.concat(kenteColors).map((c, i) => (
           <span key={i} style={{ background: c }} />
@@ -19,8 +19,8 @@ export default function Footer() {
             <Image src="/logo/LOGO_FECAO_SANS_FOND.png" alt="FÉCOA" width={32} height={32} className="rounded-full" />
             <span className="font-display text-2xl font-bold tracking-[4px] text-gold">FÉCOA</span>
           </div>
-          <p className="text-[10px] tracking-[2px] uppercase text-muted mb-4">Foire Économique et Culturelle Ouest-Africaine</p>
-          <p className="text-[13px] text-muted leading-relaxed max-w-[260px] mb-5">
+          <p className="text-[10px] tracking-[2px] uppercase mb-4" style={{ color: 'var(--text-muted)' }}>Foire Économique et Culturelle Ouest-Africaine</p>
+          <p className="text-[13px] leading-relaxed max-w-[260px] mb-5" style={{ color: 'var(--text-muted)' }}>
             Le rendez-vous incontournable des échanges entre le Canada et l&apos;Afrique de l&apos;Ouest. Montréal, {SITE.dates}.
           </p>
           <div className="flex gap-1.5 flex-wrap">
@@ -39,8 +39,8 @@ export default function Footer() {
 
         <div>
           <h4 className="text-[10px] font-bold tracking-[3px] uppercase text-gold-2 mb-4">Navigation</h4>
-          {['L\'événement', 'Programme', 'Billetterie', 'Exposants', 'Sponsors', 'Presse', 'Contact'].map(item => (
-            <Link key={item} href={`/${item === 'L\'événement' ? '#about' : item.toLowerCase()}`} className="block text-[13px] text-muted mb-[9px] hover:text-gold-2 transition-colors">
+          {["L'événement", 'Programme', 'Billetterie', 'Exposants', 'Sponsors', 'Presse', 'Contact'].map(item => (
+            <Link key={item} href={`/${item === "L'événement" ? '#about' : item.toLowerCase()}`} className="block text-[13px] mb-[9px] hover:text-gold-2 transition-colors" style={{ color: 'var(--text-muted)' }}>
               {item}
             </Link>
           ))}
@@ -54,25 +54,23 @@ export default function Footer() {
             { label: 'Devenir exposant', href: '/exposants' },
             { label: 'Devenir sponsor', href: '/sponsors' },
           ].map(item => (
-            <Link key={item.label} href={item.href} className="block text-[13px] text-muted mb-[9px] hover:text-gold-2 transition-colors">
+            <Link key={item.label} href={item.href} className="block text-[13px] mb-[9px] hover:text-gold-2 transition-colors" style={{ color: 'var(--text-muted)' }}>
               {item.label}
             </Link>
           ))}
         </div>
 
         <div>
-          <h4 className="text-[10px] font-bold tracking-[3px] uppercase text-gold-2 mb-4">Infos pratiques</h4>
-          {['Accès & Transport', 'Hébergement partenaires', 'FAQ', 'Politique de confidentialité'].map(item => (
-            <Link key={item} href="/contact" className="block text-[13px] text-muted mb-[9px] hover:text-gold-2 transition-colors">
-              {item}
-            </Link>
-          ))}
+          <h4 className="text-[10px] font-bold tracking-[3px] uppercase text-gold-2 mb-4">Contact</h4>
+          <a href={`mailto:${SITE.emails.general}`} className="block text-[13px] mb-[9px] hover:text-gold-2 transition-colors" style={{ color: 'var(--text-muted)' }}>{SITE.emails.general}</a>
+          <span className="block text-[13px] mb-[9px]" style={{ color: 'var(--text-muted)' }}>{SITE.phone}</span>
+          <span className="block text-[13px] mb-[9px]" style={{ color: 'var(--text-muted)' }}>{SITE.location}</span>
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto flex justify-between items-center py-[clamp(14px,2vw,22px)] px-[clamp(16px,4vw,56px)] border-t border-[rgba(255,255,255,.04)] flex-wrap gap-2">
-        <span className="text-[11px] text-[rgba(122,143,168,.42)]">© 2026 FÉCOA — Tous droits réservés. Montréal, Québec, Canada.</span>
-        <span className="font-display text-[17px] font-bold text-[rgba(200,155,60,.26)] tracking-[2px]">#FÉCOA2026</span>
+      <div className="max-w-[1400px] mx-auto flex justify-between items-center py-[clamp(14px,2vw,22px)] px-[clamp(16px,4vw,56px)] border-t flex-wrap gap-2" style={{ borderColor: 'var(--border)' }}>
+        <span className="text-[11px]" style={{ color: 'var(--text-muted)', opacity: 0.5 }}>© 2026 FÉCOA — Tous droits réservés. {SITE.location}.</span>
+        <span className="font-display text-[17px] font-bold tracking-[2px]" style={{ color: 'var(--gold)', opacity: 0.3 }}>#FÉCOA2026</span>
       </div>
     </footer>
   )

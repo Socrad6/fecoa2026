@@ -95,46 +95,42 @@ export default function ProgrammePage() {
       <div className="max-w-[1400px] mx-auto">
         <span className="eyebrow">Programme</span>
         <h2 className="sec-title">Quatre jours <em>d&apos;exception</em></h2>
-        <p className="text-[clamp(13px,1.4vw,15px)] text-muted max-w-[520px] leading-[1.8] mb-4">
+        <p className="text-[clamp(13px,1.4vw,15px)] max-w-[520px] leading-[1.8] mb-4" style={{ color: 'var(--text-muted)' }}>
           Un programme dense pour les entrepreneurs, artisans, investisseurs et le grand public.
         </p>
 
-        {/* Legend */}
         <div className="flex gap-4 mb-12 flex-wrap">
-          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-[#4ade80]" /><span className="text-muted">Public</span></span>
-          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-[#60a5fa]" /><span className="text-muted">Pro / B2B</span></span>
-          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-gold" /><span className="text-muted">VIP</span></span>
+          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-[#4ade80]" /><span style={{ color: 'var(--text-muted)' }}>Public</span></span>
+          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-[#60a5fa]" /><span style={{ color: 'var(--text-muted)' }}>Pro / B2B</span></span>
+          <span className="flex items-center gap-2 text-[10px] tracking-[1px] uppercase"><span className="w-2 h-2 rounded-full bg-gold" /><span style={{ color: 'var(--text-muted)' }}>VIP</span></span>
         </div>
 
         <div className="space-y-0">
-          {days.map((day, dayIndex) => (
+          {days.map((day) => (
             <div key={day.date}>
-              {/* Day header */}
-              <div className="flex items-stretch border-b border-[rgba(200,155,60,.12)]">
-                {/* Left — Day number + title */}
-                <div className="w-[280px] flex-shrink-0 py-8 pr-8 border-r border-[rgba(200,155,60,.12)]">
+              <div className="flex items-stretch border-b" style={{ borderColor: 'var(--border)' }}>
+                <div className="w-[280px] flex-shrink-0 py-8 pr-8 border-r" style={{ borderColor: 'var(--border)' }}>
                   <div className="flex items-baseline gap-3 mb-2">
                     <span className="font-display text-[48px] font-bold leading-none" style={{ color: day.tagColor, opacity: 0.3 }}>{day.num}</span>
                     <div>
-                      <span className="text-[10px] font-bold tracking-[2px] uppercase text-muted">{day.date} {day.month}</span>
+                      <span className="text-[10px] font-bold tracking-[2px] uppercase" style={{ color: 'var(--text-muted)' }}>{day.date} {day.month}</span>
                     </div>
                   </div>
-                  <h3 className="font-display text-[22px] font-bold text-white leading-tight mb-2">
+                  <h3 className="font-display text-[22px] font-bold leading-tight mb-2" style={{ color: 'var(--text-main)' }}>
                     {day.title}
                     <span className="text-gold-2"> {day.subtitle}</span>
                   </h3>
                   <span className="inline-block px-2.5 py-0.5 text-[8px] font-bold tracking-[2px] uppercase text-white mb-3" style={{ background: day.tagColor }}>
                     {day.tag}
                   </span>
-                  <p className="text-[12px] text-muted leading-[1.7]">{day.desc}</p>
+                  <p className="text-[12px] leading-[1.7]" style={{ color: 'var(--text-muted)' }}>{day.desc}</p>
                 </div>
 
-                {/* Right — Agenda */}
                 <div className="flex-1">
                   {day.agenda.map((item, i) => (
-                    <div key={i} className="grid grid-cols-[70px_1fr_auto] items-center gap-3 py-3 px-5 border-b border-[rgba(200,155,60,.04)] last:border-b-0 hover:bg-[rgba(200,155,60,.03)] transition-colors">
+                    <div key={i} className="grid grid-cols-[70px_1fr_auto] items-center gap-3 py-3 px-5 border-b last:border-b-0 hover:bg-[rgba(200,155,60,.03)] transition-colors" style={{ borderColor: 'var(--border)' }}>
                       <b className="text-[11px] font-semibold tracking-[1px] text-gold-2 tabular-nums">{item.time}</b>
-                      <span className="text-[12px] text-text font-light">{item.text}</span>
+                      <span className="text-[12px] font-light" style={{ color: 'var(--text-main)' }}>{item.text}</span>
                       <span className={`text-[8px] font-bold tracking-[1px] uppercase px-2 py-0.5 rounded-full whitespace-nowrap ${badgeStyles[item.badgeType]}`}>
                         {item.badge}
                       </span>

@@ -34,7 +34,6 @@ export default function HomePage() {
       <section id="home" className="relative min-h-screen overflow-hidden flex items-center px-[clamp(16px,5vw,90px)] pt-24 pb-20">
         <HeroCanvas />
 
-        {/* Kente stripe left */}
         <div className="absolute left-0 top-0 bottom-0 w-1 flex flex-col">
           {['#C89B3C', '#C0392B', '#1A7A3C', '#1A5276', '#C89B3C', '#C0392B', '#1A7A3C', '#1A5276'].map((c, i) => (
             <span key={i} style={{ background: c }} className="flex-1" />
@@ -80,10 +79,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* TICKER */}
       <Ticker />
-
-      {/* COUNTDOWN */}
       <Countdown />
 
       {/* KENTE DIVIDER */}
@@ -95,29 +91,28 @@ export default function HomePage() {
       </div>
 
       {/* ABOUT */}
-      <section id="about" className="bg-navy-2 py-[clamp(70px,9vh,128px)] px-[clamp(16px,5vw,80px)]">
+      <section id="about" className="py-[clamp(70px,9vh,128px)] px-[clamp(16px,5vw,80px)]" style={{ background: 'var(--bg-2)' }}>
         <div className="max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(36px,6vw,96px)] items-start">
             <div>
               <span className="eyebrow">L&apos;événement</span>
               <h2 className="sec-title">Un pont entre <em>deux continents</em></h2>
-              <p className="text-[clamp(13px,1.4vw,15px)] text-text leading-[1.9] mb-4 font-light">
+              <p className="text-[clamp(13px,1.4vw,15px)] leading-[1.9] mb-4 font-light" style={{ color: 'var(--text-main)' }}>
                 La Foire Économique et Culturelle Ouest-Africaine 2026 est un événement d&apos;envergure internationale rassemblant pour la première fois à Montréal les communautés commerciales, artisanales et culturelles du Sénégal, de la Guinée, du Mali et de la diaspora africaine au Canada.
               </p>
-              <p className="text-[clamp(13px,1.4vw,15px)] text-text leading-[1.9] mb-8 font-light">
+              <p className="text-[clamp(13px,1.4vw,15px)] leading-[1.9] mb-8 font-light" style={{ color: 'var(--text-main)' }}>
                 Pendant quatre jours, Montréal devient le carrefour des échanges entre l&apos;Afrique de l&apos;Ouest et le Canada — un espace de commerce, de dialogue et de célébration culturelle ouvert à tous.
               </p>
 
-              {/* Pillars */}
-              <div className="space-y-0 border-l border-[rgba(200,155,60,.12)]">
+              <div className="space-y-0 border-l" style={{ borderColor: 'var(--border)' }}>
                 {pillars.map(p => (
-                  <div key={p.title} className="flex items-start gap-4 py-4 px-5 border-b border-[rgba(200,155,60,.06)] hover:bg-[rgba(200,155,60,.04)] transition-all border-l-3 border-l-transparent hover:border-l-gold">
+                  <div key={p.title} className="flex items-start gap-4 py-4 px-5 border-b hover:bg-[rgba(200,155,60,.04)] transition-all border-l-3 border-l-transparent hover:border-l-gold" style={{ borderColor: 'var(--border)' }}>
                     <div className="w-[36px] h-[36px] rounded-full border flex items-center justify-center flex-shrink-0 text-sm" style={{ borderColor: p.color, color: p.color }}>
                       {p.icon}
                     </div>
                     <div>
                       <strong className="block text-[11px] font-semibold text-gold-2 mb-1">{p.title}</strong>
-                      <span className="text-[12px] text-muted leading-relaxed">{p.desc}</span>
+                      <span className="text-[12px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>{p.desc}</span>
                     </div>
                   </div>
                 ))}
@@ -129,15 +124,15 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Stats — grille propre 2x3 */}
+            {/* Stats */}
             <div className="grid grid-cols-2 gap-[2px]">
               {stats.map(s => (
-                <div key={s.label} className="bg-navy-3 p-[clamp(18px,2.5vw,28px)] relative overflow-hidden group cursor-default">
+                <div key={s.label} className="p-[clamp(18px,2.5vw,28px)] relative overflow-hidden group cursor-default" style={{ background: 'var(--bg-3)' }}>
                   <div className="absolute top-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" style={{ background: s.color }} />
                   <span className="block font-display text-[clamp(28px,3.5vw,44px)] font-bold leading-none" style={{ color: s.color }}>
                     {s.num.toLocaleString()}{s.suffix}
                   </span>
-                  <small className="block text-[10px] font-medium tracking-[1px] text-muted uppercase mt-1.5">{s.label}</small>
+                  <small className="block text-[10px] font-medium tracking-[1px] uppercase mt-1.5" style={{ color: 'var(--text-muted)' }}>{s.label}</small>
                 </div>
               ))}
             </div>
@@ -154,11 +149,11 @@ export default function HomePage() {
       </div>
 
       {/* NEWSLETTER */}
-      <section className="py-[clamp(50px,6vh,80px)] px-[clamp(16px,5vw,80px)] bg-navy-2 text-center">
+      <section className="py-[clamp(50px,6vh,80px)] px-[clamp(16px,5vw,80px)] text-center" style={{ background: 'var(--bg-2)' }}>
         <div className="max-w-[600px] mx-auto">
           <span className="eyebrow justify-center">Restez informé</span>
-          <h2 className="font-display text-[clamp(22px,3vw,32px)] font-bold text-white mb-2">Newsletter FÉCOA</h2>
-          <p className="text-[13px] text-muted mb-6">Recevez les dernières annonces, offres early bird et programme complet.</p>
+          <h2 className="font-display text-[clamp(22px,3vw,32px)] font-bold mb-2" style={{ color: 'var(--text-main)' }}>Newsletter FÉCOA</h2>
+          <p className="text-[13px] mb-6" style={{ color: 'var(--text-muted)' }}>Recevez les dernières annonces, offres early bird et programme complet.</p>
           <Newsletter />
         </div>
       </section>
@@ -168,7 +163,7 @@ export default function HomePage() {
         <div className="max-w-[700px] mx-auto">
           <span className="eyebrow justify-center">Rejoignez-nous</span>
           <h2 className="sec-title text-center">Prêt à participer à <em>la FÉCOA 2026</em> ?</h2>
-          <p className="text-[clamp(13px,1.4vw,15px)] text-muted mb-8 leading-relaxed">
+          <p className="text-[clamp(13px,1.4vw,15px)] mb-8 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
             Réservez votre billet dès maintenant ou découvrez les opportunités d&apos;exposition et de sponsoring.
           </p>
           <div className="flex gap-3.5 justify-center flex-wrap">
