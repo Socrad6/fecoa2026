@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SITE } from '@/lib/site'
 
 const faqItems = [
   { q: 'Où se déroule la FÉCOA 2026 ?', a: 'La foire aura lieu à Montréal, Québec, Canada. Le lieu exact sera confirmé en mars 2026.' },
@@ -12,10 +13,10 @@ const faqItems = [
 ]
 
 const contactInfo = [
-  { label: 'Général', value: 'info@fecoa2026.ca', href: 'mailto:info@fecoa2026.ca', icon: '✉' },
-  { label: 'Exposants', value: 'inscriptions@fecoa2026.ca', href: 'mailto:inscriptions@fecoa2026.ca', icon: '🏪' },
-  { label: 'Sponsors', value: 'sponsors@fecoa2026.ca', href: 'mailto:sponsors@fecoa2026.ca', icon: '🤝' },
-  { label: 'Presse', value: 'presse@fecoa2026.ca', href: 'mailto:presse@fecoa2026.ca', icon: '📰' },
+  { label: 'Général', value: SITE.emails.general, href: `mailto:${SITE.emails.general}`, icon: '✉' },
+  { label: 'Exposants', value: SITE.emails.exhibitors, href: `mailto:${SITE.emails.exhibitors}`, icon: '🏪' },
+  { label: 'Sponsors', value: SITE.emails.sponsors, href: `mailto:${SITE.emails.sponsors}`, icon: '🤝' },
+  { label: 'Presse', value: SITE.emails.press, href: `mailto:${SITE.emails.press}`, icon: '📰' },
 ]
 
 export default function ContactPage() {
@@ -44,7 +45,7 @@ export default function ContactPage() {
             <div className="space-y-4 mb-8">
               <div className="p-5 border border-[rgba(200,155,60,.08)]">
                 <span className="block text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-1">Téléphone</span>
-                <span className="text-[13px] text-text">+1 (514) xxx-xxxx</span>
+                <span className="text-[13px] text-text">{SITE.phone}</span>
               </div>
               <div className="p-5 border border-[rgba(200,155,60,.08)]">
                 <span className="block text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-1">Lieu</span>
@@ -57,9 +58,9 @@ export default function ContactPage() {
             <div>
               <span className="text-[9px] font-bold tracking-[3px] uppercase text-gold-2 mb-3 block">Suivez-nous</span>
               <div className="flex gap-2 flex-wrap">
-                {['Facebook', 'Instagram', 'LinkedIn', 'YouTube', 'TikTok'].map(s => (
-                  <a key={s} href="#" className="w-10 h-10 border border-[rgba(200,155,60,.12)] flex items-center justify-center text-muted hover:border-gold hover:text-gold-2 hover:bg-[rgba(200,155,60,.07)] transition-all text-[11px]">
-                    {s.slice(0, 2)}
+                {Object.entries(SITE.social).map(([platform, url]) => (
+                  <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-[rgba(200,155,60,.12)] flex items-center justify-center text-muted hover:border-gold hover:text-gold-2 hover:bg-[rgba(200,155,60,.07)] transition-all text-[11px] uppercase">
+                    {platform.slice(0, 2)}
                   </a>
                 ))}
               </div>

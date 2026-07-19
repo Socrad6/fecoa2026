@@ -2,6 +2,7 @@ import Link from 'next/link'
 import HeroCanvas from '@/components/home/HeroCanvas'
 import Ticker from '@/components/home/Ticker'
 import Countdown from '@/components/ui/Countdown'
+import Newsletter from '@/components/ui/Newsletter'
 
 const nations = [
   { code: 'SN', name: 'Sénégal', color: '#1A7A3C' },
@@ -151,6 +152,16 @@ export default function HomePage() {
         <span style={{ background: '#1A5276' }} />
         <span style={{ background: '#C0392B' }} />
       </div>
+
+      {/* NEWSLETTER */}
+      <section className="py-[clamp(50px,6vh,80px)] px-[clamp(16px,5vw,80px)] bg-navy-2 text-center">
+        <div className="max-w-[600px] mx-auto">
+          <span className="eyebrow justify-center">Restez informé</span>
+          <h2 className="font-display text-[clamp(22px,3vw,32px)] font-bold text-white mb-2">Newsletter FÉCOA</h2>
+          <p className="text-[13px] text-muted mb-6">Recevez les dernières annonces, offres early bird et programme complet.</p>
+          <Newsletter />
+        </div>
+      </section>
 
       {/* CTA */}
       <section className="py-[clamp(60px,8vh,120px)] px-[clamp(16px,5vw,80px)] text-center">

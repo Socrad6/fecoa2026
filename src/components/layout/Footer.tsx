@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { SITE } from '@/lib/site'
 
 const kenteColors = ['#C89B3C', '#C0392B', '#1A7A3C', '#1A5276']
 
@@ -20,7 +21,7 @@ export default function Footer() {
           </div>
           <p className="text-[10px] tracking-[2px] uppercase text-muted mb-4">Foire Économique et Culturelle Ouest-Africaine</p>
           <p className="text-[13px] text-muted leading-relaxed max-w-[260px] mb-5">
-            Le rendez-vous incontournable des échanges entre le Canada et l&apos;Afrique de l&apos;Ouest. Montréal, 17–20 Décembre 2026.
+            Le rendez-vous incontournable des échanges entre le Canada et l&apos;Afrique de l&apos;Ouest. Montréal, {SITE.dates}.
           </p>
           <div className="flex gap-1.5 flex-wrap">
             {[
