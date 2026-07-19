@@ -23,12 +23,12 @@ export default function Footer() {
 
       <div className="max-w-[1400px] mx-auto px-[clamp(16px,4vw,56px)]">
         {/* Main footer */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-[clamp(32px,5vw,56px)] py-[clamp(40px,6vw,72px)]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-[clamp(32px,5vw,56px)] py-[clamp(48px,6vw,80px)]">
           {/* Brand column */}
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-[42px] h-[42px] rounded-full border border-[rgba(200,155,60,.3)] p-0.5">
-                <Image src="/logo/LOGO_FECAO_SANS_FOND.png" alt="FÉCOA" width={38} height={38} className="w-full h-full object-contain rounded-full" />
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-[44px] h-[44px] rounded-full border border-[rgba(200,155,60,.25)] p-0.5">
+                <Image src="/logo/LOGO_FECAO_SANS_FOND.png" alt="FÉCOA" width={40} height={40} className="w-full h-full object-contain rounded-full" />
               </div>
               <div>
                 <span className="font-display text-[22px] font-bold tracking-[4px] text-gold">FÉCOA</span>
@@ -46,15 +46,14 @@ export default function Footer() {
                 { name: 'Mali', bg: '#c9900a' },
                 { name: 'Diaspora', bg: '#D52B1E' },
               ].map(n => (
-                <span key={n.name} className="px-3 py-1 text-[10px] font-semibold tracking-[1px] text-white" style={{ background: n.bg }}>
+                <span key={n.name} className="px-3 py-1 text-[10px] font-semibold tracking-[1px] text-white rounded-full" style={{ background: n.bg }}>
                   {n.name}
                 </span>
               ))}
             </div>
-            {/* Social icons */}
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
               {Object.entries(SITE.social).map(([platform, url]) => (
-                <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 border flex items-center justify-center transition-all duration-300 hover:border-gold hover:text-gold hover:bg-[rgba(200,155,60,.08)] hover:shadow-[0_0_12px_rgba(200,155,60,.12)]" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }} aria-label={platform}>
+                <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[rgba(200,155,60,.1)] hover:text-gold hover:shadow-[0_0_12px_rgba(200,155,60,.12)] border border-transparent hover:border-[rgba(200,155,60,.2)]" style={{ color: 'var(--text-muted)' }} aria-label={platform}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={socialIcons[platform]} /></svg>
                 </a>
               ))}
@@ -108,7 +107,7 @@ export default function Footer() {
               <span className="w-5 h-px bg-gold/30" />
               Contact
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-3.5">
               <li>
                 <a href={`mailto:${SITE.emails.general}`} className="text-[13px] hover:text-gold-2 transition-colors duration-300 flex items-start gap-2.5" style={{ color: 'var(--text-muted)' }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mt-0.5 flex-shrink-0"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
