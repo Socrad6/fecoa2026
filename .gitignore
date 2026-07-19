@@ -44,3 +44,7 @@ prisma/dev.db-journal
 # capacitor native builds
 /ios/
 /android/
+
+# opencode skills
+.agents/
+skills-lock.json
