@@ -1,0 +1,26 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "npx prisma generate && next build",
+  "installCommand": "npm install --ignore-engines",
+  "env": {
+    "DATABASE_URL": "@database-url",
+    "STRIPE_SECRET_KEY": "@stripe-secret-key",
+    "STRIPE_PUBLISHABLE_KEY": "@stripe-publishable-key",
+    "STRIPE_WEBHOOK_SECRET": "@stripe-webhook-secret",
+    "PAYPAL_CLIENT_ID": "@paypal-client-id",
+    "PAYPAL_CLIENT_SECRET": "@paypal-client-secret",
+    "ORANGE_MONEY_MERCHANT_KEY": "@orange-money-merchant-key",
+    "ORANGE_MONEY_API_KEY": "@orange-money-api-key",
+    "WAVE_API_KEY": "@wave-api-key",
+    "RESEND_API_KEY": "@resend-api-key"
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,221 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ═══════════════════════════════════════
+// UTILISATEURS & AUTHENTIFICATION
+// ═══════════════════════════════════════
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  firstName     String
+  lastName      String
+  phone         String?
+  country       String?
+  role          String    @default("visitor") // visitor | exhibitor | sponsor | press | admin
+  passwordHash  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  orders        Order[]
+  tickets       Ticket[]
+  newsletter    Newsletter[]
+  exhibitor     Exhibitor?
+  sponsor       Sponsor?
+  pressAccred   PressAccred?
+
+  @@map("users")
+}
+
+// ═══════════════════════════════════════
+// BILLETS & COMMANDES
+// ═══════════════════════════════════════
+
+model TicketType {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  name          String
+  description   String?
+  price         Int       // en cents (CAD)
+  dayAccess     String?   // null = tous les jours, "17", "18", "19", "20"
+  category      String    @default("general") // general | child | vip | free
+  maxPerOrder   Int       @default(20)
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+
+  orderItems    OrderItem[]
+  tickets       Ticket[]
+
+  @@map("ticket_types")
+}
+
+model Order {
+  id            String    @id @default(cuid())
+  userId        String?
+  email         String
+  firstName     String
+  lastName      String
+  status        String    @default("pending") // pending | paid | cancelled | refunded
+  subtotal      Int       // en cents
+  discount      Int       @default(0)
+  total         Int       // en cents
+  promoCode     String?
+  paymentMethod String?   // stripe | paypal | orange_money | wave
+  paymentId     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User?     @relation(fields: [userId], references: [id])
+  items         OrderItem[]
+  tickets       Ticket[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id            String    @id @default(cuid())
+  orderId       String
+  ticketTypeId  String
+  quantity      Int       @default(1)
+  unitPrice     Int       // en cents
+
+  order         Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  ticketType    TicketType @relation(fields: [ticketTypeId], references: [id])
+
+  @@map("order_items")
+}
+
+model Ticket {
+  id            String    @id @default(cuid())
+  orderId       String
+  userId        String?
+  ticketTypeId  String
+  qrCode        String    @unique // UUID unique pour le QR code
+  status        String    @default("valid") // valid | used | cancelled
+  checkedInAt   DateTime?
+  createdAt     DateTime  @default(now())
+
+  order         Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user          User?      @relation(fields: [userId], references: [id])
+  ticketType    TicketType @relation(fields: [ticketTypeId], references: [id])
+
+  @@map("tickets")
+}
+
+model PromoCode {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  discountType  String    @default("percent") // percent | fixed
+  discountValue Int       // pourcentage ou montant en cents
+  maxUses       Int?
+  usedCount     Int       @default(0)
+  validFrom     DateTime  @default(now())
+  validUntil    DateTime?
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+
+  @@map("promo_codes")
+}
+
+// ═══════════════════════════════════════
+// EXPOSANTS
+// ═══════════════════════════════════════
+
+model Exhibitor {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  companyName   String
+  sector        String
+  country       String?
+  description   String?
+  website       String?
+  standTier     String    @default("essential") // essential | standard | premium | custom
+  standSize     String?
+  status        String    @default("pending") // pending | confirmed | cancelled
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id])
+
+  @@map("exhibitors")
+}
+
+// ═══════════════════════════════════════
+// SPONSORS
+// ═══════════════════════════════════════
+
+model Sponsor {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  companyName   String
+  contactName   String
+  title         String?
+  sector        String?
+  packageLevel  String    @default("bronze") // bronze | silver | gold | platinum | custom
+  amount        Int       // en cents
+  status        String    @default("pending") // pending | confirmed | cancelled
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id])
+
+  @@map("sponsors")
+}
+
+// ═══════════════════════════════════════
+// ACCRÉDITATION PRESSE
+// ═══════════════════════════════════════
+
+model PressAccred {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  mediaName     String
+  coverageType  String    // print | tv | radio | blog | photo | social
+  daysPresent   String    // "all" | "17" | "18" | "19" | "20"
+  status        String    @default("pending") // pending | approved | rejected
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id])
+
+  @@map("press_accreditations")
+}
+
+// ═══════════════════════════════════════
+// NEWSLETTER
+// ═══════════════════════════════════════
+
+model Newsletter {
+  id            String    @id @default(cuid())
+  userId        String?
+  email         String    @unique
+  confirmed     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+
+  user          User?     @relation(fields: [userId], references: [id])
+
+  @@map("newsletter")
+}
+
+// ═══════════════════════════════════════
+// CONTACT
+// ═══════════════════════════════════════
+
+model ContactMessage {
+  id            String    @id @default(cuid())
+  name          String
+  email         String
+  subject       String?
+  message       String
+  read          Boolean   @default(false)
+  replied       Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+
+  @@map("contact_messages")
+}

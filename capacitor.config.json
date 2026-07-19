@@ -1,0 +1,34 @@
+{
+  "appId": "ca.fecoa.app",
+  "appName": "FÉCOA 2026",
+  "webDir": "out",
+  "server": {
+    "url": "https://fecoa2026.ca",
+    "cleartext": false
+  },
+  "plugins": {
+    "CapacitorSplashScreen": {
+      "launchAutoHide": true,
+      "launchShowDuration": 2000,
+      "backgroundColor": "#061524",
+      "showSpinner": true,
+      "spinnerColor": "#C89B3C"
+    },
+    "CapacitorLocalNotifications": {
+      "smallIcon": "ic_stat_icon_config_sample",
+      "iconColor": "#C89B3C"
+    },
+    "CapacitorPushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#061524"
+  },
+  "ios": {
+    "backgroundColor": "#061524",
+    "contentInset": "automatic",
+    "preferredContentMode": "mobile"
+  }
+}
