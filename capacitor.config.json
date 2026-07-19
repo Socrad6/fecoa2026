@@ -1,9 +1,9 @@
 {
   "appId": "ca.fecoa.app",
-  "appName": "FÉCOA 2026",
-  "webDir": "out",
+  "appName": "FECOA 2026",
+  "webDir": ".next",
   "server": {
-    "url": "https://fecoa2026.ca",
+    "url": "https://fecoa2026.vercel.app",
     "cleartext": false
   },
   "plugins": {
@@ -19,7 +19,11 @@
       "iconColor": "#C89B3C"
     },
     "CapacitorPushNotifications": {
-      "presentationOptions": ["badge", "sound", "alert"]
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
     }
   },
   "android": {
