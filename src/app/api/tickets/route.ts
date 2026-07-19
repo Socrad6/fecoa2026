@@ -1,16 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/logger'
+
+const ctx = 'tickets'
 
 export async function GET(req: NextRequest) {
   const orderId = req.nextUrl.searchParams.get('order')
+  const email = req.nextUrl.searchParams.get('email')
 
   if (!orderId) {
     return NextResponse.json({ error: 'Order ID requis' }, { status: 400 })
   }
 
+  if (orderId.length > 50) {
+    return NextResponse.json({ error: 'Order ID invalide' }, { status: 400 })
+  }
+
   try {
-    const order = await prisma.order.findUnique({
-      where: { id: orderId },
+    const where: Record<string, string> = { id: orderId }
+    if (email) where.email = email
+
+    const order = await prisma.order.findFirst({
+      where,
       include: {
         items: { include: { ticketType: true } },
         tickets: { include: { ticketType: true } },
@@ -18,6 +29,7 @@ export async function GET(req: NextRequest) {
     })
 
     if (!order) {
+      logger.warn(ctx, 'Order not found or email mismatch', { orderId, emailProvided: !!email })
       return NextResponse.json({ error: 'Commande non trouvée' }, { status: 404 })
     }
 
@@ -47,7 +59,7 @@ export async function GET(req: NextRequest) {
       createdAt: order.createdAt,
     })
   } catch (error) {
-    console.error('Erreur récupération commande:', error)
+    logger.error(ctx, 'Error fetching order', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

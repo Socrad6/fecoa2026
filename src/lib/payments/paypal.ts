@@ -1,11 +1,17 @@
+import { logger } from '@/lib/logger'
+
+const ctx = 'paypal'
+
 const PAYPAL_API = process.env.PAYPAL_MODE === 'live'
   ? 'https://api-m.paypal.com'
   : 'https://api-m.sandbox.paypal.com'
 
 async function getAccessToken(): Promise<string> {
-  const auth = Buffer.from(
-    `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`
-  ).toString('base64')
+  const clientId = process.env.PAYPAL_CLIENT_ID
+  const secret = process.env.PAYPAL_CLIENT_SECRET
+  if (!clientId || !secret) throw new Error('PayPal credentials missing (PAYPAL_CLIENT_ID / PAYPAL_CLIENT_SECRET)')
+
+  const auth = Buffer.from(`${clientId}:${secret}`).toString('base64')
 
   const res = await fetch(`${PAYPAL_API}/v1/oauth2/token`, {
     method: 'POST',
@@ -15,6 +21,12 @@ async function getAccessToken(): Promise<string> {
     },
     body: 'grant_type=client_credentials',
   })
+
+  if (!res.ok) {
+    const body = await res.text()
+    logger.error(ctx, `Token request failed (${res.status})`, { status: res.status, body })
+    throw new Error(`PayPal token error: ${res.status}`)
+  }
 
   const data = await res.json()
   return data.access_token
@@ -29,6 +41,8 @@ export async function createPayPalOrder({
   total: number
   currency?: string
 }) {
+  logger.info(ctx, 'Creating PayPal order', { orderId, total, currency })
+
   const accessToken = await getAccessToken()
 
   const res = await fetch(`${PAYPAL_API}/v2/checkout/orders`, {
@@ -57,13 +71,23 @@ export async function createPayPalOrder({
     }),
   })
 
-  return res.json()
+  const data = await res.json()
+
+  if (!res.ok) {
+    logger.error(ctx, `Create order failed (${res.status})`, { orderId, status: res.status, paypalError: data })
+    throw new Error(`PayPal create order error: ${res.status}`)
+  }
+
+  logger.info(ctx, 'PayPal order created', { orderId, paypalOrderId: data.id })
+  return data
 }
 
-export async function capturePayPalOrder(orderId: string) {
+export async function capturePayPalOrder(paypalOrderId: string) {
+  logger.info(ctx, 'Capturing PayPal order', { paypalOrderId })
+
   const accessToken = await getAccessToken()
 
-  const res = await fetch(`${PAYPAL_API}/v2/checkout/orders/${orderId}/capture`, {
+  const res = await fetch(`${PAYPAL_API}/v2/checkout/orders/${paypalOrderId}/capture`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -71,5 +95,13 @@ export async function capturePayPalOrder(orderId: string) {
     },
   })
 
-  return res.json()
+  const data = await res.json()
+
+  if (!res.ok) {
+    logger.error(ctx, `Capture failed (${res.status})`, { paypalOrderId, status: res.status, paypalError: data })
+    throw new Error(`PayPal capture error: ${res.status}`)
+  }
+
+  logger.info(ctx, 'PayPal order captured', { paypalOrderId, status: data.status })
+  return data
 }

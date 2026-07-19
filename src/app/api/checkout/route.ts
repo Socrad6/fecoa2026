@@ -4,44 +4,77 @@ import { createStripeCheckoutSession } from '@/lib/payments/stripe'
 import { createPayPalOrder } from '@/lib/payments/paypal'
 import { createOrangeMoneyPayment } from '@/lib/payments/orange-money'
 import { createWavePayment } from '@/lib/payments/wave'
+import { logger } from '@/lib/logger'
 
-interface CartItem {
-  slug: string
-  quantity: number
-}
+const ctx = 'checkout'
+const VALID_PAYMENT_METHODS = ['stripe', 'paypal', 'orange_money', 'wave'] as const
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const MAX_QUANTITY = 20
+const MAX_NAME_LEN = 100
+const MAX_EMAIL_LEN = 254
+const MAX_PHONE_LEN = 30
 
-interface CheckoutRequest {
-  email: string
-  firstName: string
-  lastName: string
-  phone?: string
-  items: CartItem[]
-  promoCode?: string
-  paymentMethod: 'stripe' | 'paypal' | 'orange_money' | 'wave'
+function sanitize(str: unknown): string {
+  return typeof str === 'string' ? str.trim().slice(0, MAX_NAME_LEN) : ''
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const body: CheckoutRequest = await req.json()
-    const { email, firstName, lastName, phone, items, promoCode, paymentMethod } = body
+    const body = await req.json()
+    const { email, firstName, lastName, phone, items, promoCode, paymentMethod } = body as Record<string, unknown>
 
-    if (!email || !firstName || !lastName || !items?.length) {
-      return NextResponse.json({ error: 'Champs requis manquants' }, { status: 400 })
+    // ── Validation ──
+    const errors: string[] = []
+
+    const cleanEmail = sanitize(email)
+    const cleanFirst = sanitize(firstName)
+    const cleanLast = sanitize(lastName)
+    const cleanPhone = typeof phone === 'string' ? phone.trim().slice(0, MAX_PHONE_LEN) : null
+
+    if (!cleanEmail || !EMAIL_RE.test(cleanEmail)) {
+      errors.push('Courriel invalide')
+    }
+    if (!cleanFirst) errors.push('Prénom requis')
+    if (!cleanLast) errors.push('Nom requis')
+    if (!Array.isArray(items) || items.length === 0) {
+      errors.push('Au moins un billet requis')
+    } else if (items.length > 50) {
+      errors.push('Trop de billets (max 50)')
     }
 
-    // Récupérer les types de billets
-    const slugs = items.map(i => i.slug)
+    const validPayment = VALID_PAYMENT_METHODS.includes(paymentMethod as typeof VALID_PAYMENT_METHODS[number])
+    if (!validPayment) {
+      errors.push(`Mode de paiement invalide: "${paymentMethod}"`)
+    }
+
+    if (errors.length > 0) {
+      logger.warn(ctx, 'Validation failed', { errors })
+      return NextResponse.json({ error: errors.join(', ') }, { status: 400 })
+    }
+
+    // ── Validate quantities ──
+    const cartItems = items as { slug: string; quantity: number }[]
+    for (const item of cartItems) {
+      if (!item.slug || typeof item.quantity !== 'number' || item.quantity < 1 || item.quantity > MAX_QUANTITY) {
+        return NextResponse.json({ error: `Quantité invalide pour "${item.slug || '?'}" (1–${MAX_QUANTITY})` }, { status: 400 })
+      }
+    }
+
+    // ── Fetch ticket types ──
+    const slugs = cartItems.map(i => i.slug)
     const ticketTypes = await prisma.ticketType.findMany({
       where: { slug: { in: slugs }, active: true },
     })
 
     if (ticketTypes.length !== slugs.length) {
-      return NextResponse.json({ error: 'Type de billet invalide' }, { status: 400 })
+      const found = new Set(ticketTypes.map(t => t.slug))
+      const missing = slugs.filter(s => !found.has(s))
+      return NextResponse.json({ error: `Types de billets invalides: ${missing.join(', ')}` }, { status: 400 })
     }
 
-    // Calculer les totaux
+    // ── Calculate totals ──
     let subtotal = 0
-    const orderItems = items.map(item => {
+    const orderItems = cartItems.map(item => {
       const tt = ticketTypes.find(t => t.slug === item.slug)!
       const lineTotal = tt.price * item.quantity
       subtotal += lineTotal
@@ -52,10 +85,10 @@ export async function POST(req: NextRequest) {
       }
     })
 
-    // Appliquer promo code
+    // ── Promo code ──
     let discount = 0
     let promoRecord = null
-    if (promoCode) {
+    if (promoCode && typeof promoCode === 'string') {
       promoRecord = await prisma.promoCode.findUnique({
         where: { code: promoCode.toUpperCase() },
       })
@@ -74,24 +107,27 @@ export async function POST(req: NextRequest) {
 
     const total = Math.max(subtotal - discount, 0)
 
-    // Créer la commande
+    // ── Create order ──
+    const method = paymentMethod as typeof VALID_PAYMENT_METHODS[number]
+
     const order = await prisma.order.create({
       data: {
-        email,
-        firstName,
-        lastName,
-        phone: phone || null,
+        email: cleanEmail,
+        firstName: cleanFirst,
+        lastName: cleanLast,
+        phone: cleanPhone,
         status: 'pending',
         subtotal,
         discount,
         total,
         promoCode: promoCode?.toUpperCase() || null,
-        paymentMethod,
+        paymentMethod: method,
         items: { create: orderItems },
       },
     })
 
-    // Incrémenter usage promo code
+    logger.info(ctx, 'Order created', { orderId: order.id, email: cleanEmail, total, method })
+
     if (promoRecord) {
       await prisma.promoCode.update({
         where: { id: promoRecord.id },
@@ -103,59 +139,59 @@ export async function POST(req: NextRequest) {
     const successUrl = `${appUrl}/billetterie/confirmation`
     const cancelUrl = `${appUrl}/billetterie`
 
-    // Créer la session de paiement selon la méthode
+    // ── Create payment session ──
     let paymentUrl: string | null = null
     let paymentId: string | null = null
 
-    switch (paymentMethod) {
-      case 'stripe': {
-        const lineItemsStripe = orderItems.map(item => {
-          const tt = ticketTypes.find(t => t.id === item.ticketTypeId)!
-          return { name: `FÉCOA 2026 — ${tt.name}`, price: item.unitPrice, quantity: item.quantity }
-        })
-        const session = await createStripeCheckoutSession({
-          orderId: order.id,
-          email,
-          lineItems: lineItemsStripe,
-          successUrl,
-          cancelUrl,
-        })
-        paymentUrl = session.url
-        paymentId = session.id
-        break
+    try {
+      switch (method) {
+        case 'stripe': {
+          const lineItemsStripe = orderItems.map(item => {
+            const tt = ticketTypes.find(t => t.id === item.ticketTypeId)!
+            return { name: `FÉCOA 2026 — ${tt.name}`, price: item.unitPrice, quantity: item.quantity }
+          })
+          const session = await createStripeCheckoutSession({
+            orderId: order.id,
+            email: cleanEmail,
+            lineItems: lineItemsStripe,
+            successUrl,
+            cancelUrl,
+          })
+          paymentUrl = session.url
+          paymentId = session.id
+          break
+        }
+        case 'paypal': {
+          const result = await createPayPalOrder({ orderId: order.id, total })
+          const paypalLink = result.links?.find((l: { rel: string }) => l.rel === 'approve')
+          paymentUrl = paypalLink?.href || null
+          paymentId = result.id
+          break
+        }
+        case 'orange_money': {
+          const result = await createOrangeMoneyPayment({ orderId: order.id, total, email: cleanEmail })
+          paymentUrl = result.payment_url && result.pay_token
+            ? `${result.payment_url}?token=${result.pay_token}`
+            : null
+          paymentId = result.pay_token || null
+          break
+        }
+        case 'wave': {
+          const result = await createWavePayment({ orderId: order.id, total })
+          paymentUrl = result.wave_launch_url || null
+          paymentId = result.id
+          break
+        }
       }
-      case 'paypal': {
-        const result = await createPayPalOrder({
-          orderId: order.id,
-          total,
-        })
-        const paypalLink = result.links?.find((l: { rel: string }) => l.rel === 'approve')
-        paymentUrl = paypalLink?.href || null
-        paymentId = result.id
-        break
-      }
-      case 'orange_money': {
-        const result = await createOrangeMoneyPayment({
-          orderId: order.id,
-          total,
-          email,
-        })
-        paymentUrl = result.payment_url || result.pay_token ? `${result.payment_url}?token=${result.pay_token}` : null
-        paymentId = result.pay_token || null
-        break
-      }
-      case 'wave': {
-        const result = await createWavePayment({
-          orderId: order.id,
-          total,
-        })
-        paymentUrl = result.wave_launch_url || null
-        paymentId = result.id
-        break
-      }
+    } catch (paymentError) {
+      logger.error(ctx, 'Payment session creation failed', paymentError)
+      // Order stays pending — user can retry
+      return NextResponse.json(
+        { error: 'Erreur lors de la création de la session de paiement' },
+        { status: 502 }
+      )
     }
 
-    // Mettre à jour la commande avec l'ID de paiement
     await prisma.order.update({
       where: { id: order.id },
       data: { paymentId: paymentId || null },
@@ -168,7 +204,7 @@ export async function POST(req: NextRequest) {
       message: 'Commande créée avec succès',
     })
   } catch (error) {
-    console.error('Erreur checkout:', error)
+    logger.error(ctx, 'Checkout error', error)
     return NextResponse.json(
       { error: 'Erreur serveur lors de la création de la commande' },
       { status: 500 }

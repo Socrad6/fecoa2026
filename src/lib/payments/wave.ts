@@ -1,3 +1,6 @@
+import { logger } from '@/lib/logger'
+
+const ctx = 'wave'
 const WAVE_API = process.env.WAVE_API_URL || 'https://api.wave.com/v1'
 
 export async function createWavePayment({
@@ -9,10 +12,15 @@ export async function createWavePayment({
   total: number
   currency?: string
 }) {
+  const apiKey = process.env.WAVE_API_KEY
+  if (!apiKey) throw new Error('WAVE_API_KEY manquante')
+
+  logger.info(ctx, 'Creating Wave payment', { orderId, total, currency })
+
   const res = await fetch(`${WAVE_API}/checkout/sessions`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${process.env.WAVE_API_KEY}`,
+      Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -24,5 +32,13 @@ export async function createWavePayment({
     }),
   })
 
-  return res.json()
+  const data = await res.json()
+
+  if (!res.ok) {
+    logger.error(ctx, `Create payment failed (${res.status})`, { orderId, status: res.status, waveError: data })
+    throw new Error(`Wave create payment error: ${res.status}`)
+  }
+
+  logger.info(ctx, 'Wave payment created', { orderId, waveSessionId: data.id })
+  return data
 }

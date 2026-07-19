@@ -1,56 +1,89 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getStripeClient, handleStripeWebhook } from '@/lib/payments/stripe'
+import { logger } from '@/lib/logger'
+
+const ctx = 'stripe-webhook'
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
   const sig = req.headers.get('stripe-signature')
 
   if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
+    logger.warn(ctx, 'Missing signature or webhook secret')
     return NextResponse.json({ error: 'Signature manquante' }, { status: 400 })
   }
 
+  let event
   try {
-    const event = getStripeClient().webhooks.constructEvent(
+    event = getStripeClient().webhooks.constructEvent(
       body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     )
+  } catch (err) {
+    logger.error(ctx, 'Webhook signature verification failed', err)
+    return NextResponse.json({ error: 'Signature invalide' }, { status: 400 })
+  }
 
+  logger.info(ctx, 'Webhook received', { type: event.type, eventId: event.id })
+
+  try {
     const result = await handleStripeWebhook(event)
 
-    if (result?.orderId) {
-      // Mettre à jour la commande
-      await prisma.order.update({
+    if (!result?.orderId) {
+      return NextResponse.json({ received: true })
+    }
+
+    // ── Idempotency: check if order is already paid ──
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: result.orderId },
+      include: { tickets: true },
+    })
+
+    if (!existingOrder) {
+      logger.warn(ctx, 'Order not found for webhook', { orderId: result.orderId })
+      return NextResponse.json({ received: true })
+    }
+
+    if (existingOrder.status === 'paid' && existingOrder.tickets.length > 0) {
+      logger.info(ctx, 'Order already processed (idempotent skip)', { orderId: result.orderId })
+      return NextResponse.json({ received: true })
+    }
+
+    // ── Atomic transaction: update order + create tickets ──
+    await prisma.$transaction(async (tx) => {
+      await tx.order.update({
         where: { id: result.orderId },
         data: { status: 'paid', paymentId: result.paymentId },
       })
 
-      // Générer les billets
-      const order = await prisma.order.findUnique({
-        where: { id: result.orderId },
-        include: { items: true },
+      const orderItems = await tx.orderItem.findMany({
+        where: { orderId: result.orderId },
       })
 
-      if (order) {
-        for (const item of order.items) {
-          for (let i = 0; i < item.quantity; i++) {
-            await prisma.ticket.create({
-              data: {
-                orderId: order.id,
-                ticketTypeId: item.ticketTypeId,
-                qrCode: crypto.randomUUID(),
-                status: 'valid',
-              },
-            })
-          }
-        }
-      }
-    }
+      const ticketData = orderItems.flatMap(item =>
+        Array.from({ length: item.quantity }, () => ({
+          orderId: result.orderId,
+          ticketTypeId: item.ticketTypeId,
+          qrCode: crypto.randomUUID(),
+          status: 'valid' as const,
+        }))
+      )
 
-    return NextResponse.json({ received: true })
+      if (ticketData.length > 0) {
+        await tx.ticket.createMany({ data: ticketData })
+      }
+
+      logger.info(ctx, 'Order paid + tickets generated', {
+        orderId: result.orderId,
+        ticketCount: ticketData.length,
+      })
+    })
   } catch (err) {
-    console.error('Webhook error:', err)
-    return NextResponse.json({ error: 'Webhook error' }, { status: 400 })
+    logger.error(ctx, 'Webhook processing error', err)
+    return NextResponse.json({ error: 'Webhook error' }, { status: 500 })
   }
+
+  return NextResponse.json({ received: true })
 }
