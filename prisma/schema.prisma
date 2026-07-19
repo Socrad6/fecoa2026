@@ -61,6 +61,7 @@ model Order {
   email         String
   firstName     String
   lastName      String
+  phone         String?
   status        String    @default("pending") // pending | paid | cancelled | refunded
   subtotal      Int       // en cents
   discount      Int       @default(0)
