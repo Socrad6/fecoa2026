@@ -1,11 +1,12 @@
 'use client'
 
-import { useRef, useEffect, useState, useCallback } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import Link from 'next/link'
 import HeroCanvas from '@/components/home/HeroCanvas'
 import Ticker from '@/components/home/Ticker'
 import Countdown from '@/components/ui/Countdown'
 import Newsletter from '@/components/ui/Newsletter'
+import { useScrollReveal, useStaggerReveal } from '@/lib/hooks'
 
 const nations = [
   { code: 'SN', name: 'Sénégal', color: '#1A7A3C', emoji: '🇸🇳' },
@@ -32,6 +33,7 @@ const stats = [
 
 function useCountUp(target: number, duration = 2000, active = false) {
   const [val, setVal] = useState(0)
+  const [popped, setPopped] = useState(false)
   useEffect(() => {
     if (!active) return
     let start = 0
@@ -39,19 +41,21 @@ function useCountUp(target: number, duration = 2000, active = false) {
     const step = (ts: number) => {
       if (!start) start = ts
       const progress = Math.min((ts - start) / duration, 1)
-      setVal(Math.floor(progress * target))
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setVal(Math.floor(eased * target))
       if (progress < 1) raf = requestAnimationFrame(step)
+      else setPopped(true)
     }
     raf = requestAnimationFrame(step)
     return () => cancelAnimationFrame(raf)
   }, [active, target, duration])
-  return val
+  return { val, popped }
 }
 
 function StatCard({ s, index }: { s: typeof stats[0]; index: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
-  const count = useCountUp(s.num, 1800 + index * 200, visible)
+  const { val: count, popped } = useCountUp(s.num, 2000 + index * 300, visible)
 
   useEffect(() => {
     const el = ref.current
@@ -66,10 +70,18 @@ function StatCard({ s, index }: { s: typeof stats[0]; index: number }) {
   return (
     <div
       ref={ref}
-      className="bento-item p-6 sm:p-8 flex flex-col justify-center text-center min-h-[140px]"
-      style={{ transitionDelay: `${index * 60}ms` }}
+      className="bento-item p-6 sm:p-8 flex flex-col justify-center text-center min-h-[140px] opacity-0 translate-y-6 transition-all"
+      style={{
+        transitionDelay: `${index * 80}ms`,
+        transitionDuration: '.7s',
+        transitionTimingFunction: 'cubic-bezier(.16,1,.3,1)',
+        ...(visible ? { opacity: 1, transform: 'translateY(0)' } : {}),
+      }}
     >
-      <span className="block font-display text-[clamp(36px,4vw,56px)] font-bold leading-none" style={{ color: s.color }}>
+      <span
+        className={`block font-display text-[clamp(36px,4vw,56px)] font-bold leading-none ${popped ? 'animate-count-pop' : ''}`}
+        style={{ color: s.color }}
+      >
         {count.toLocaleString()}{s.suffix}
       </span>
       <small className="block text-[10px] font-semibold tracking-[2px] uppercase mt-3" style={{ color: 'var(--color-muted)' }}>{s.label}</small>
@@ -110,9 +122,9 @@ function CountdownCompact() {
       {units.map((u, i) => (
         <div key={u.label} className="flex gap-2 items-center">
           {i > 0 && <span className="font-display text-lg font-light text-gold/20" aria-hidden="true">:</span>}
-          <div className="text-center">
-            <span className="block font-display text-[28px] font-bold text-gold-2 leading-none">{pad(u.val)}</span>
-            <label className="text-[8px] font-bold tracking-[2px] uppercase mt-1 block" style={{ color: 'var(--color-muted)' }}>{u.label}</label>
+          <div className="text-center min-w-[52px] py-2 rounded-xl" style={{ background: 'rgba(200,155,60,.08)', border: '1px solid rgba(200,155,60,.06)' }}>
+            <span className="block font-display text-[26px] font-bold text-gold-2 leading-none">{pad(u.val)}</span>
+            <label className="text-[7px] font-bold tracking-[2px] uppercase mt-1 block" style={{ color: 'var(--color-muted)' }}>{u.label}</label>
           </div>
         </div>
       ))}
@@ -121,6 +133,31 @@ function CountdownCompact() {
 }
 
 export default function HomePage() {
+  const aboutRef = useScrollReveal()
+  const aboutTextRef = useScrollReveal()
+  const pillarsRef = useStaggerReveal()
+  const statsRef = useStaggerReveal()
+  const newsletterRef = useScrollReveal()
+  const ctaRef = useScrollReveal()
+  const heroParallax = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = heroParallax.current
+    if (!el) return
+    let raf: number
+    const onScroll = () => {
+      raf = requestAnimationFrame(() => {
+        const y = window.scrollY
+        if (y < window.innerHeight) {
+          el.style.transform = `translateY(${y * 0.15}px)`
+          el.style.opacity = `${1 - y / (window.innerHeight * 0.8)}`
+        }
+      })
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(raf) }
+  }, [])
+
   return (
     <>
       {/* ═══════ HERO ═══════ */}
@@ -135,7 +172,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        <div className="relative z-10 max-w-[1400px] w-full mx-auto">
+        <div className="relative z-10 max-w-[1400px] w-full mx-auto" ref={heroParallax}>
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 lg:gap-16 items-center">
             {/* Left text */}
             <div>
@@ -167,7 +204,7 @@ export default function HomePage() {
 
               <div className="flex gap-2.5 flex-wrap animate-fadeUp" style={{ animationDelay: '.78s', opacity: 0 }}>
                 {nations.map(n => (
-                  <span key={n.code} className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium text-white border border-[rgba(255,255,255,.15)] cursor-default hover:scale-105 hover:border-[rgba(255,255,255,.4)] transition-all duration-300 hover:shadow-[0_0_16px_rgba(255,255,255,.1)]" style={{ background: `${n.color}cc` }}>
+                  <span key={n.code} className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium text-white border border-[rgba(255,255,255,.15)] cursor-default hover:scale-110 hover:border-[rgba(255,255,255,.5)] transition-all duration-500 hover:shadow-[0_0_24px_rgba(255,255,255,.12)]" style={{ background: `${n.color}cc` }}>
                     <span className="text-sm">{n.emoji}</span>
                     {n.name}
                   </span>
@@ -177,7 +214,7 @@ export default function HomePage() {
 
             {/* Right bento */}
             <div className="hidden lg:grid grid-cols-2 gap-3 animate-slideInRight" style={{ animationDelay: '.4s', opacity: 0 }}>
-              <div className="col-span-2 bento-item p-6 text-center" style={{ background: 'rgba(200,155,60,.1)', border: '1px solid rgba(200,155,60,.12)' }}>
+              <div className="col-span-2 bento-item p-6 text-center" style={{ background: 'rgba(200,155,60,.08)', border: '1px solid rgba(200,155,60,.1)' }}>
                 <p className="text-[9px] font-bold tracking-[4px] uppercase text-gold-2 mb-3">Ouverture dans</p>
                 <CountdownCompact />
               </div>
@@ -214,7 +251,7 @@ export default function HomePage() {
       <section id="about" className="py-[clamp(80px,10vh,140px)] px-[clamp(20px,5vw,80px)]" style={{ background: 'var(--color-bg-2)' }} aria-labelledby="about-title">
         <div className="max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(40px,6vw,100px)] items-start">
-            <div>
+            <div ref={aboutTextRef} className="reveal">
               <span className="eyebrow">L&apos;événement</span>
               <h2 id="about-title" className="sec-title">Un pont entre <em>deux continents</em></h2>
               <p className="text-[clamp(14px,1.4vw,16px)] leading-[1.9] mb-5 font-light" style={{ color: 'var(--color-text)' }}>
@@ -224,10 +261,10 @@ export default function HomePage() {
                 Pendant quatre jours, Montréal devient le carrefour des échanges entre l&apos;Afrique de l&apos;Ouest et le Canada — un espace de commerce, de dialogue et de célébration culturelle ouvert à tous.
               </p>
 
-              <div className="space-y-0" role="list" aria-label="Les quatre piliers">
+              <div className="space-y-0" role="list" aria-label="Les quatre piliers" ref={pillarsRef}>
                 {pillars.map(p => (
-                  <div key={p.title} role="listitem" className="flex items-start gap-5 py-5 px-6 rounded-lg border-b transition-all duration-300 hover:bg-[rgba(200,155,60,.04)] border-l-3 border-l-transparent hover:border-l-gold" style={{ borderColor: 'var(--color-border)' }}>
-                    <div className="w-[42px] h-[42px] rounded-full border flex items-center justify-center flex-shrink-0 text-sm transition-all duration-300" style={{ borderColor: p.color, color: p.color }}>
+                  <div key={p.title} role="listitem" className="reveal flex items-start gap-5 py-5 px-6 rounded-lg border-b transition-all duration-500 hover:bg-[rgba(200,155,60,.04)] border-l-3 border-l-transparent hover:border-l-gold" style={{ borderColor: 'var(--color-border)' }}>
+                    <div className="w-[42px] h-[42px] rounded-full border flex items-center justify-center flex-shrink-0 text-sm transition-all duration-500 group-hover:scale-110" style={{ borderColor: p.color, color: p.color }}>
                       {p.icon}
                     </div>
                     <div>
@@ -238,14 +275,16 @@ export default function HomePage() {
                 ))}
               </div>
 
-              <Link href="/billetterie" className="btn-gold mt-10 inline-flex">
-                Participer à la FÉCOA
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M7 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
-              </Link>
+              <div className="mt-10 reveal">
+                <Link href="/billetterie" className="btn-gold inline-flex">
+                  Participer à la FÉCOA
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M7 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
+                </Link>
+              </div>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-3" aria-label="Statistiques">
+            <div ref={statsRef} className="grid grid-cols-2 gap-3" aria-label="Statistiques">
               {stats.map((s, i) => (
                 <StatCard key={s.label} s={s} index={i} />
               ))}
@@ -263,8 +302,8 @@ export default function HomePage() {
 
       {/* ═══════ NEWSLETTER ═══════ */}
       <section className="py-[clamp(60px,7vh,100px)] px-[clamp(20px,5vw,80px)] text-center" style={{ background: 'var(--color-bg-2)' }} aria-label="Newsletter">
-        <div className="max-w-[600px] mx-auto">
-          <div className="glass p-[clamp(32px,5vw,56px)]">
+        <div className="max-w-[600px] mx-auto" ref={newsletterRef}>
+          <div className="glass p-[clamp(32px,5vw,56px)] reveal-scale">
             <span className="eyebrow justify-center">Restez informé</span>
             <h2 className="font-display text-[clamp(24px,3vw,36px)] font-bold mb-3" style={{ color: 'var(--color-text)' }}>Newsletter FÉCOA</h2>
             <p className="text-[14px] mb-8" style={{ color: 'var(--color-muted)' }}>Recevez les dernières annonces, offres early bird et programme complet.</p>
@@ -276,16 +315,18 @@ export default function HomePage() {
       {/* ═══════ CTA ═══════ */}
       <section className="py-[clamp(80px,10vh,140px)] px-[clamp(20px,5vw,80px)] text-center relative overflow-hidden" aria-label="Participez">
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, var(--gold) 1px, transparent 0)', backgroundSize: '40px 40px' }} aria-hidden="true" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(200,155,60,.06) 0%, transparent 70%)' }} aria-hidden="true" />
-        <div className="max-w-[700px] mx-auto relative z-10">
-          <span className="eyebrow justify-center">Rejoignez-nous</span>
-          <h2 className="sec-title text-center">Prêt à participer à <em>la FÉCOA 2026</em> ?</h2>
-          <p className="text-[clamp(14px,1.4vw,16px)] mb-10 leading-relaxed" style={{ color: 'var(--color-muted)' }}>
-            Réservez votre billet dès maintenant ou découvrez les opportunités d&apos;exposition et de sponsoring.
-          </p>
-          <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/billetterie" className="btn-gold">Acheter un billet</Link>
-            <Link href="/exposants" className="btn-outline">Réserver un stand</Link>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none animate-glow-pulse" style={{ background: 'radial-gradient(circle, rgba(200,155,60,.08) 0%, transparent 70%)' }} aria-hidden="true" />
+        <div className="max-w-[700px] mx-auto relative z-10" ref={ctaRef}>
+          <div className="reveal">
+            <span className="eyebrow justify-center">Rejoignez-nous</span>
+            <h2 className="sec-title text-center">Prêt à participer à <em>la FÉCOA 2026</em> ?</h2>
+            <p className="text-[clamp(14px,1.4vw,16px)] mb-10 leading-relaxed" style={{ color: 'var(--color-muted)' }}>
+              Réservez votre billet dès maintenant ou découvrez les opportunités d&apos;exposition et de sponsoring.
+            </p>
+            <div className="flex gap-3 justify-center flex-wrap">
+              <Link href="/billetterie" className="btn-gold">Acheter un billet</Link>
+              <Link href="/exposants" className="btn-outline">Réserver un stand</Link>
+            </div>
           </div>
         </div>
       </section>

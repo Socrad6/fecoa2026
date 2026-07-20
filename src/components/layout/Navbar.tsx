@@ -58,8 +58,10 @@ export default function Navbar() {
 
       <header
         role="banner"
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? 'glass shadow-[0_1px_0_var(--color-border)]' : 'bg-transparent'
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[var(--ease-smooth)] ${
+          scrolled
+            ? 'glass shadow-[0_1px_0_var(--color-border)] backdrop-blur-xl'
+            : 'bg-transparent backdrop-blur-none'
         }`}
       >
         <nav
@@ -78,20 +80,21 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <ul className="hidden lg:flex gap-1 items-center" role="list">
+          <ul className="hidden lg:flex gap-0.5 items-center" role="list">
             {navLinks.map(link => (
-              <li key={link.href}>
+              <li key={link.href} className="group/nav relative">
                 <Link
                   href={link.href}
-                  className="px-3.5 py-2 text-[11px] font-medium tracking-[.12em] uppercase rounded-full transition-all duration-300 hover:bg-[rgba(200,155,60,.08)] hover:text-gold-2 focus-visible:ring-2 focus-visible:ring-gold"
+                  className="nav-pill px-3.5 py-2 text-[11px] font-medium tracking-[.12em] uppercase rounded-full transition-all duration-300 hover:bg-[rgba(200,155,60,.08)] hover:text-gold-2 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
                   style={{ color: 'var(--color-text)' }}
                 >
                   {link.label}
                 </Link>
+                <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-gold transition-all duration-300 group-hover/nav:w-[60%] rounded-full" aria-hidden="true" />
               </li>
             ))}
-            <li className="ml-3">
-              <Link href="/billetterie" className="btn-gold !py-2.5 !px-6 !text-[10px]">
+            <li className="ml-2">
+              <Link href="/billetterie" className="btn-gold !py-2.5 !px-6 !text-[10px] hover:shadow-[0_0_24px_rgba(200,155,60,.4)]">
                 Billets
                 <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M7 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
               </Link>

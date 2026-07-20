@@ -1,6 +1,54 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+
+interface FlipDigitProps {
+  value: number
+  pad?: number
+  color?: string
+  label: string
+}
+
+function FlipDigit({ value, pad = 2, color = 'navy', label }: FlipDigitProps) {
+  const prevRef = useRef(value)
+  const [display, setDisplay] = useState(value)
+  const [flipping, setFlipping] = useState(false)
+
+  useEffect(() => {
+    if (prevRef.current !== value) {
+      setFlipping(true)
+      const t1 = setTimeout(() => setDisplay(value), 160)
+      const t2 = setTimeout(() => setFlipping(false), 400)
+      prevRef.current = value
+      return () => { clearTimeout(t1); clearTimeout(t2) }
+    }
+  }, [value])
+
+  const padded = String(display).padStart(pad, '0')
+
+  return (
+    <div className="flex gap-2 sm:gap-3 items-center">
+      <div className="text-center min-w-[56px] rounded-lg overflow-hidden" style={{ background: 'rgba(6,21,36,.06)' }}>
+        <div
+          className="relative py-1.5"
+          style={{ perspective: '200px' }}
+        >
+          <span
+            className={`block font-display text-[32px] font-bold leading-none transition-transform duration-300 ${flipping ? 'scale-y-90 opacity-70' : 'scale-y-100 opacity-100'}`}
+            style={{
+              color: `var(--${color})`,
+              transformOrigin: 'center top',
+              transitionTimingFunction: 'var(--ease-spring)',
+            }}
+          >
+            {padded}
+          </span>
+        </div>
+        <label className="text-[7px] font-bold tracking-[2px] uppercase block" style={{ color: `var(--${color}, rgba(6,21,36,.4))` }}>{label}</label>
+      </div>
+    </div>
+  )
+}
 
 export default function Countdown() {
   const [time, setTime] = useState({ d: 0, h: 0, m: 0, s: 0 })
@@ -22,7 +70,6 @@ export default function Countdown() {
     return () => clearInterval(iv)
   }, [])
 
-  const pad = (n: number) => String(n).padStart(2, '0')
   const units = [
     { val: time.d, label: 'Jours' },
     { val: time.h, label: 'Heures' },
@@ -44,10 +91,7 @@ export default function Countdown() {
           {units.map((u, i) => (
             <div key={u.label} className="flex gap-2 sm:gap-3 items-center">
               {i > 0 && <span className="font-display text-xl font-light text-[rgba(6,21,36,.2)] mb-3" aria-hidden="true">:</span>}
-              <div className="text-center min-w-[56px] py-1.5 rounded-lg" style={{ background: 'rgba(6,21,36,.06)' }}>
-                <span className="block font-display text-[32px] font-bold text-navy leading-none">{pad(u.val)}</span>
-                <label className="text-[7px] font-bold tracking-[2px] uppercase text-[rgba(6,21,36,.4)]">{u.label}</label>
-              </div>
+              <FlipDigit value={u.val} label={u.label} color="navy" />
             </div>
           ))}
         </div>
