@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
@@ -39,6 +40,24 @@ async function main() {
     })
   }
   console.log(`  ✅ ${promos.length} codes promo créés`)
+
+  // Créer l'admin
+  const adminEmail = 'admin@fecoa2026.ca'
+  const adminPassword = 'FECOA2026!'
+  const passwordHash = await bcrypt.hash(adminPassword, 12)
+
+  await prisma.user.upsert({
+    where: { email: adminEmail },
+    update: {},
+    create: {
+      email: adminEmail,
+      firstName: 'Admin',
+      lastName: 'FÉCOA',
+      role: 'admin',
+      passwordHash,
+    },
+  })
+  console.log(`  ✅ Admin créé: ${adminEmail} / ${adminPassword}`)
 
   console.log('🎉 Seed terminé !')
 }

@@ -164,7 +164,10 @@ export default function Footer() {
           <span className="text-[11px]" style={{ color: 'var(--color-muted)', opacity: .6 }}>
             © 2026 FÉCOA — Tous droits réservés.
           </span>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
+            <Link href="/mentions-legales" className="text-[11px] hover:text-gold-2 transition-colors" style={{ color: 'var(--color-muted)', opacity: .6 }}>Mentions légales</Link>
+            <Link href="/politique-confidentialite" className="text-[11px] hover:text-gold-2 transition-colors" style={{ color: 'var(--color-muted)', opacity: .6 }}>Confidentialité</Link>
+            <Link href="/cgv" className="text-[11px] hover:text-gold-2 transition-colors" style={{ color: 'var(--color-muted)', opacity: .6 }}>CGV</Link>
             <span className="text-[10px] tracking-[2px] uppercase" style={{ color: 'var(--color-muted)', opacity: .4 }}>{SITE.location}</span>
             <span className="font-display text-[16px] font-bold tracking-[2px]" style={{ color: 'var(--gold)', opacity: .25 }}>#FÉCOA2026</span>
           </div>

@@ -1,74 +1,57 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { capturePayPalOrder } from '@/lib/payments/paypal'
 import { sendTicketEmail } from '@/lib/email'
 import { logger } from '@/lib/logger'
 
-const ctx = 'paypal-webhook'
+const ctx = 'orange-money-webhook'
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
+    logger.info(ctx, 'Orange Money webhook received', { body })
 
-    const eventType = body?.event_type
-    const resource = body?.resource
-
-    logger.info(ctx, 'PayPal webhook received', { eventType, resourceId: resource?.id })
-
-    if (eventType !== 'CHECKOUT.ORDER.APPROVED') {
-      logger.debug(ctx, `Ignoring event type: ${eventType}`)
-      return NextResponse.json({ status: 'ignored' })
+    const { order_id, status, pay_token } = body as {
+      order_id?: string
+      status?: string
+      pay_token?: string
     }
 
-    // Extract orderId from reference_id or custom_id
-    const orderId = resource?.purchase_units?.[0]?.reference_id
-      || resource?.custom_id
-
-    if (!orderId) {
-      logger.warn(ctx, 'No orderId found in PayPal webhook payload')
+    if (!order_id) {
+      logger.warn(ctx, 'No order_id in webhook payload')
       return NextResponse.json({ status: 'no_order_id' })
     }
 
-    // Idempotency check
+    if (status !== 'SUCCESS') {
+      logger.info(ctx, 'Orange Money payment not successful', { orderId: order_id, status })
+      return NextResponse.json({ status: 'payment_not_successful' })
+    }
+
     const existingOrder = await prisma.order.findUnique({
-      where: { id: orderId },
+      where: { id: order_id },
       include: { tickets: true },
     })
 
     if (!existingOrder) {
-      logger.warn(ctx, 'Order not found', { orderId })
+      logger.warn(ctx, 'Order not found', { orderId: order_id })
       return NextResponse.json({ status: 'order_not_found' })
     }
 
     if (existingOrder.status === 'paid' && existingOrder.tickets.length > 0) {
-      logger.info(ctx, 'Order already processed (idempotent skip)', { orderId })
+      logger.info(ctx, 'Order already processed (idempotent skip)', { orderId: order_id })
       return NextResponse.json({ status: 'already_processed' })
     }
 
-    // Capture the PayPal order
-    if (resource?.id) {
-      try {
-        await capturePayPalOrder(resource.id)
-      } catch (captureErr) {
-        logger.error(ctx, 'PayPal capture failed', captureErr)
-        return NextResponse.json({ status: 'capture_error' }, { status: 500 })
-      }
-    }
-
-    // Atomic transaction: update order + create tickets
     await prisma.$transaction(async (tx) => {
       await tx.order.update({
-        where: { id: orderId },
-        data: { status: 'paid', paymentId: resource?.id || null },
+        where: { id: order_id },
+        data: { status: 'paid', paymentId: pay_token || null },
       })
 
-      const orderItems = await tx.orderItem.findMany({
-        where: { orderId },
-      })
+      const orderItems = await tx.orderItem.findMany({ where: { orderId: order_id } })
 
       const ticketData = orderItems.flatMap(item =>
         Array.from({ length: item.quantity }, () => ({
-          orderId,
+          orderId: order_id,
           ticketTypeId: item.ticketTypeId,
           qrCode: crypto.randomUUID(),
           status: 'valid' as const,
@@ -79,15 +62,11 @@ export async function POST(req: NextRequest) {
         await tx.ticket.createMany({ data: ticketData })
       }
 
-      logger.info(ctx, 'Order paid + tickets generated', {
-        orderId,
-        ticketCount: ticketData.length,
-      })
+      logger.info(ctx, 'Order paid + tickets generated', { orderId: order_id, ticketCount: ticketData.length })
     })
 
-    // ── Send ticket email ──
     const paidOrder = await prisma.order.findUnique({
-      where: { id: orderId },
+      where: { id: order_id },
       include: { items: { include: { ticketType: true } }, tickets: { include: { ticketType: true } } },
     })
     if (paidOrder) {

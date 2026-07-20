@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/ui/ThemeProvider'
+import { I18nProvider } from '@/components/ui/I18nProvider'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import Analytics from '@/components/ui/Analytics'
@@ -53,10 +54,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="antialiased">
         <ThemeProvider>
-          <Analytics />
-          <Navbar />
-          <main id="main-content">{children}</main>
-          <Footer />
+          <I18nProvider>
+            <Analytics />
+            <Navbar />
+            <main id="main-content">{children}</main>
+            <Footer />
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

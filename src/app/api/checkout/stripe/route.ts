@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getStripeClient, handleStripeWebhook } from '@/lib/payments/stripe'
+import { sendTicketEmail } from '@/lib/email'
 import { logger } from '@/lib/logger'
 
 const ctx = 'stripe-webhook'
@@ -80,6 +81,22 @@ export async function POST(req: NextRequest) {
         ticketCount: ticketData.length,
       })
     })
+
+    // ── Send ticket email ──
+    const paidOrder = await prisma.order.findUnique({
+      where: { id: result.orderId },
+      include: { items: { include: { ticketType: true } }, tickets: { include: { ticketType: true } } },
+    })
+    if (paidOrder) {
+      sendTicketEmail({
+        to: paidOrder.email,
+        firstName: paidOrder.firstName,
+        orderId: paidOrder.id,
+        items: paidOrder.items.map(i => ({ name: i.ticketType.name, quantity: i.quantity, unitPrice: i.unitPrice })),
+        total: paidOrder.total,
+        tickets: paidOrder.tickets.map(t => ({ type: t.ticketType.name, qrCode: t.qrCode })),
+      }).catch(e => logger.error(ctx, 'Failed to send ticket email', e))
+    }
   } catch (err) {
     logger.error(ctx, 'Webhook processing error', err)
     return NextResponse.json({ error: 'Webhook error' }, { status: 500 })

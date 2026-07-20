@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { sendContactConfirmation, sendAdminNotification } from '@/lib/email'
+import { checkRateLimit, rateLimitResponse, RATE_LIMITS } from '@/lib/rate-limit'
 import { logger } from '@/lib/logger'
 
 const ctx = 'contact'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown'
+  const { allowed, resetAt } = checkRateLimit(`contact:${ip}`, RATE_LIMITS.contact)
+  if (!allowed) return rateLimitResponse(resetAt)
+
   try {
     const { name, email, subject, message } = await req.json()
 
@@ -31,6 +37,14 @@ export async function POST(req: NextRequest) {
     })
 
     logger.info(ctx, 'New contact message', { name: cleanName, email: cleanEmail, subject: cleanSubject })
+
+    // Send confirmation to user + notification to admin (fire and forget)
+    sendContactConfirmation(cleanEmail, cleanName, cleanSubject || 'Votre message')
+    sendAdminNotification({
+      subject: `Nouveau message de ${cleanName}`,
+      body: `<p><strong>De :</strong> ${cleanName} (${cleanEmail})</p><p><strong>Sujet :</strong> ${cleanSubject || 'N/A'}</p><p><strong>Message :</strong></p><p>${cleanMessage}</p>`,
+    })
+
     return NextResponse.json({ message: 'Message envoyé avec succès' })
   } catch (error) {
     logger.error(ctx, 'Contact error', error)

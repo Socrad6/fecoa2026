@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { sendNewsletterWelcome } from '@/lib/email'
+import { checkRateLimit, rateLimitResponse, RATE_LIMITS } from '@/lib/rate-limit'
 import { logger } from '@/lib/logger'
 
 const ctx = 'newsletter'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown'
+  const { allowed, resetAt } = checkRateLimit(`newsletter:${ip}`, RATE_LIMITS.newsletter)
+  if (!allowed) return rateLimitResponse(resetAt)
+
   try {
     const { email } = await req.json()
 
@@ -25,6 +31,10 @@ export async function POST(req: NextRequest) {
     })
 
     logger.info(ctx, 'New subscriber', { email: cleanEmail })
+
+    // Send welcome email (fire and forget)
+    sendNewsletterWelcome(cleanEmail)
+
     return NextResponse.json({ message: 'Inscription à la newsletter réussie' })
   } catch (error) {
     logger.error(ctx, 'Newsletter error', error)

@@ -1,35 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { capturePayPalOrder } from '@/lib/payments/paypal'
 import { sendTicketEmail } from '@/lib/email'
 import { logger } from '@/lib/logger'
 
-const ctx = 'paypal-webhook'
+const ctx = 'wave-webhook'
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
+    logger.info(ctx, 'Wave webhook received', { body })
 
-    const eventType = body?.event_type
-    const resource = body?.resource
+    const eventType = body?.event_type || body?.type
+    const session = body?.data || body?.session
 
-    logger.info(ctx, 'PayPal webhook received', { eventType, resourceId: resource?.id })
-
-    if (eventType !== 'CHECKOUT.ORDER.APPROVED') {
-      logger.debug(ctx, `Ignoring event type: ${eventType}`)
+    if (eventType !== 'checkout.session.completed') {
+      logger.info(ctx, 'Ignoring Wave event', { eventType })
       return NextResponse.json({ status: 'ignored' })
     }
 
-    // Extract orderId from reference_id or custom_id
-    const orderId = resource?.purchase_units?.[0]?.reference_id
-      || resource?.custom_id
-
+    const orderId = session?.reference || session?.id
     if (!orderId) {
-      logger.warn(ctx, 'No orderId found in PayPal webhook payload')
+      logger.warn(ctx, 'No orderId in Wave webhook')
       return NextResponse.json({ status: 'no_order_id' })
     }
 
-    // Idempotency check
     const existingOrder = await prisma.order.findUnique({
       where: { id: orderId },
       include: { tickets: true },
@@ -45,26 +39,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ status: 'already_processed' })
     }
 
-    // Capture the PayPal order
-    if (resource?.id) {
-      try {
-        await capturePayPalOrder(resource.id)
-      } catch (captureErr) {
-        logger.error(ctx, 'PayPal capture failed', captureErr)
-        return NextResponse.json({ status: 'capture_error' }, { status: 500 })
-      }
-    }
-
-    // Atomic transaction: update order + create tickets
     await prisma.$transaction(async (tx) => {
       await tx.order.update({
         where: { id: orderId },
-        data: { status: 'paid', paymentId: resource?.id || null },
+        data: { status: 'paid', paymentId: session?.id || null },
       })
 
-      const orderItems = await tx.orderItem.findMany({
-        where: { orderId },
-      })
+      const orderItems = await tx.orderItem.findMany({ where: { orderId } })
 
       const ticketData = orderItems.flatMap(item =>
         Array.from({ length: item.quantity }, () => ({
@@ -79,13 +60,9 @@ export async function POST(req: NextRequest) {
         await tx.ticket.createMany({ data: ticketData })
       }
 
-      logger.info(ctx, 'Order paid + tickets generated', {
-        orderId,
-        ticketCount: ticketData.length,
-      })
+      logger.info(ctx, 'Order paid + tickets generated', { orderId, ticketCount: ticketData.length })
     })
 
-    // ── Send ticket email ──
     const paidOrder = await prisma.order.findUnique({
       where: { id: orderId },
       include: { items: { include: { ticketType: true } }, tickets: { include: { ticketType: true } } },

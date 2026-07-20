@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useTheme } from '@/components/ui/ThemeProvider'
+import LangSwitcher from '@/components/ui/LangSwitcher'
 
 const navLinks = [
   { href: '/#about', label: 'L\'événement' },
@@ -102,7 +103,8 @@ export default function Navbar() {
           </ul>
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <LangSwitcher />
             <button
               onClick={toggle}
               className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[rgba(200,155,60,.1)] hover:text-gold-2 border border-transparent hover:border-[rgba(200,155,60,.15)] focus-visible:ring-2 focus-visible:ring-gold"

@@ -86,14 +86,21 @@ export default function TicketConfirmation() {
             {order.tickets?.length > 0 && (
               <div className="border rounded-xl p-6 mb-6 text-left" style={{ background: 'var(--color-bg-2)', borderColor: 'var(--color-border)' }}>
                 <h2 className="text-[11px] font-bold tracking-[2px] uppercase text-gold-2 mb-4">Vos billets</h2>
-                <div className="space-y-3">
-                  {order.tickets.map((ticket) => (
-                    <div key={ticket.id} className="flex items-center justify-between p-3 rounded-lg border" style={{ background: 'rgba(255,255,255,.02)', borderColor: 'var(--color-border-2)' }}>
-                      <div>
-                        <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>{ticket.type}</span>
-                        <span className="block text-[10px] mt-0.5" style={{ color: 'var(--color-muted)' }}>QR: {ticket.qrCode?.slice(0, 12)}...</span>
-                      </div>
-                      <span className={`text-[9px] font-bold tracking-[1px] uppercase px-2 py-0.5 rounded-full ${ticket.status === 'valid' ? 'bg-[rgba(26,122,60,.15)] text-[#4ade80]' : 'bg-[rgba(200,155,60,.14)] text-gold-2'}`}>
+                <div className="space-y-4">
+                  {order.tickets.map((ticket, i) => (
+                    <div key={ticket.id} className="p-4 rounded-lg border text-center" style={{ background: 'rgba(255,255,255,.02)', borderColor: 'var(--color-border-2)' }}>
+                      <p className="text-[10px] font-bold tracking-[2px] uppercase mb-1" style={{ color: 'var(--color-muted)' }}>Billet {i + 1} sur {order.tickets.length}</p>
+                      <p className="text-[14px] font-semibold mb-3" style={{ color: 'var(--color-text)' }}>{ticket.type}</p>
+                      <img
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`${typeof window !== 'undefined' ? window.location.origin : ''}/api/verify?qr=${ticket.qrCode}`)}&bgcolor=ffffff&color=061524`}
+                        alt={`QR Code billet ${i + 1}`}
+                        width={180}
+                        height={180}
+                        className="mx-auto rounded-lg mb-2"
+                        style={{ background: '#fff', padding: '8px' }}
+                      />
+                      <p className="text-[9px] font-mono" style={{ color: 'var(--color-muted)' }}>{ticket.qrCode}</p>
+                      <span className={`inline-block mt-2 text-[9px] font-bold tracking-[1px] uppercase px-2.5 py-0.5 rounded-full ${ticket.status === 'valid' ? 'bg-[rgba(26,122,60,.15)] text-[#4ade80]' : 'bg-[rgba(200,155,60,.14)] text-gold-2'}`}>
                         {ticket.status === 'valid' ? 'Valide' : ticket.status}
                       </span>
                     </div>

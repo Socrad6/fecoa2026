@@ -4,6 +4,7 @@ import { createStripeCheckoutSession } from '@/lib/payments/stripe'
 import { createPayPalOrder } from '@/lib/payments/paypal'
 import { createOrangeMoneyPayment } from '@/lib/payments/orange-money'
 import { createWavePayment } from '@/lib/payments/wave'
+import { checkRateLimit, rateLimitResponse, RATE_LIMITS } from '@/lib/rate-limit'
 import { logger } from '@/lib/logger'
 
 const ctx = 'checkout'
@@ -19,6 +20,11 @@ function sanitize(str: unknown): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Rate limiting
+  const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown'
+  const { allowed, resetAt } = checkRateLimit(`checkout:${ip}`, RATE_LIMITS.checkout)
+  if (!allowed) return rateLimitResponse(resetAt)
+
   try {
     const body = await req.json()
     const { email, firstName, lastName, phone, items, promoCode, paymentMethod } = body as Record<string, unknown>
