@@ -59,6 +59,61 @@ async function main() {
   })
   console.log(`  ✅ Admin créé: ${adminEmail} / ${adminPassword}`)
 
+  // Créer des exposants samples
+  const sampleExhibitors = [
+    { companyName: 'Teranga Artisanat', sector: 'Artisanat & Bijoux', country: 'Sénégal', description: 'Créations artisanales sénégalaises en argent et perles.' },
+    { companyName: 'Baobab Foods', sector: 'Alimentation & Gastronomie', country: 'Mali', description: 'Produits à base de baobab, mangue et moringa.' },
+    { companyName: 'Mode Faso', sector: 'Textile & Mode', country: 'Burkina Faso', description: 'Prêt-à-porter africain pour femmes.' },
+    { companyName: 'NexTech Conakry', sector: 'Technologie & Services', country: 'Guinée', description: 'Solutions digitales pour entreprises en Afrique de l\'Ouest.' },
+    { companyName: 'Sahel Cosmetics', sector: 'Cosmétique & Beauté', country: 'Sénégal', description: 'Cosmétiques naturels à base de beurre de karité.' },
+  ]
+
+  for (const ex of sampleExhibitors) {
+    const user = await prisma.user.upsert({
+      where: { email: `${ex.companyName.toLowerCase().replace(/\s+/g, '')}@exhibitor.fecoa` },
+      update: {},
+      create: {
+        email: `${ex.companyName.toLowerCase().replace(/\s+/g, '')}@exhibitor.fecoa`,
+        firstName: ex.companyName.split(' ')[0],
+        lastName: 'Expo',
+        role: 'exhibitor',
+      },
+    })
+    await prisma.exhibitor.upsert({
+      where: { userId: user.id },
+      update: {},
+      create: { userId: user.id, ...ex, standTier: 'standard', status: 'confirmed' },
+    })
+  }
+  console.log(`  ✅ ${sampleExhibitors.length} exposants samples créés`)
+
+  // Créer des sponsors samples
+  const sampleSponsors = [
+    { companyName: 'Banque Atlantique', packageLevel: 'platine', sector: 'Finance', amount: 5000000, contactName: 'Direction Marketing' },
+    { companyName: 'Air Canada', packageLevel: 'platine', sector: 'Transport', amount: 5000000, contactName: 'Partenariats' },
+    { companyName: 'Desjardins', packageLevel: 'or', sector: 'Finance', amount: 2500000, contactName: 'Sponsoring' },
+    { companyName: 'Exportation Canada', packageLevel: 'or', sector: 'Gouvernement', amount: 2500000, contactName: 'Affaires' },
+  ]
+
+  for (const sp of sampleSponsors) {
+    const user = await prisma.user.upsert({
+      where: { email: `${sp.companyName.toLowerCase().replace(/\s+/g, '')}@sponsor.fecoa` },
+      update: {},
+      create: {
+        email: `${sp.companyName.toLowerCase().replace(/\s+/g, '')}@sponsor.fecoa`,
+        firstName: sp.companyName.split(' ')[0],
+        lastName: 'Sponsor',
+        role: 'sponsor',
+      },
+    })
+    await prisma.sponsor.upsert({
+      where: { userId: user.id },
+      update: {},
+      create: { userId: user.id, ...sp, status: 'confirmed' },
+    })
+  }
+  console.log(`  ✅ ${sampleSponsors.length} sponsors samples créés`)
+
   console.log('🎉 Seed terminé !')
 }
 
