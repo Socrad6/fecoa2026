@@ -1,19 +1,15 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Programme — FÉCOA 2026',
+  title: 'Programme',
   description: 'Programme détaillé des 4 jours de la Foire Économique et Culturelle Ouest-Africaine. 17–20 Décembre 2026, Montréal.',
 }
 
 const days = [
   {
-    date: '17',
-    month: 'Déc',
-    num: '01',
-    title: 'Ouverture Officielle',
-    subtitle: 'Networking',
-    tag: 'Cérémonie',
-    tagColor: '#1A5276',
+    date: '17', month: 'Déc', num: '01',
+    title: 'Ouverture Officielle', subtitle: 'Networking',
+    tag: 'Cérémonie', tagColor: '#1A5276',
     desc: 'Journée inaugurale en présence des diplomates, élus et représentants des quatre nations.',
     agenda: [
       { time: '08h00', text: 'Accueil exposants — Remise des badges', badge: 'Exposants', badgeType: 'pro' },
@@ -27,13 +23,9 @@ const days = [
     ],
   },
   {
-    date: '18',
-    month: 'Déc',
-    num: '02',
-    title: 'Commerce',
-    subtitle: 'Investissement',
-    tag: 'Business',
-    tagColor: '#1A7A3C',
+    date: '18', month: 'Déc', num: '02',
+    title: 'Commerce', subtitle: 'Investissement',
+    tag: 'Business', tagColor: '#1A7A3C',
     desc: 'Journée dédiée aux échanges commerciaux B2B structurés et aux opportunités d\'investissement.',
     agenda: [
       { time: '09h30', text: 'Conférence plénière : Corridors commerciaux Canada-Afrique', badge: 'Public', badgeType: 'open' },
@@ -46,13 +38,9 @@ const days = [
     ],
   },
   {
-    date: '19',
-    month: 'Déc',
-    num: '03',
-    title: 'Artisanat',
-    subtitle: 'Savoir-faire',
-    tag: 'Artisanat',
-    tagColor: '#7D3C98',
+    date: '19', month: 'Déc', num: '03',
+    title: 'Artisanat', subtitle: 'Savoir-faire',
+    tag: 'Artisanat', tagColor: '#7D3C98',
     desc: 'Célébration du génie créatif africain. Défilé de mode avec les créateurs de la diaspora.',
     agenda: [
       { time: '09h30', text: 'Journée de l\'artisanat — Ateliers démonstration', badge: 'Public', badgeType: 'open' },
@@ -64,13 +52,9 @@ const days = [
     ],
   },
   {
-    date: '20',
-    month: 'Déc',
-    num: '04',
-    title: 'Clôture',
-    subtitle: 'Partenariats',
-    tag: 'Clôture',
-    tagColor: '#C0392B',
+    date: '20', month: 'Déc', num: '04',
+    title: 'Clôture', subtitle: 'Partenariats',
+    tag: 'Clôture', tagColor: '#C0392B',
     desc: 'Signature des accords, remise des prix FÉCOA 2026 et annonce officielle de la prochaine édition.',
     agenda: [
       { time: '10h00', text: 'Signature accords & MOU — Cérémonie officielle', badge: 'Officiel', badgeType: 'vip' },
@@ -91,46 +75,46 @@ const badgeStyles: Record<string, string> = {
 
 export default function ProgrammePage() {
   return (
-    <section className="py-[clamp(80px,10vh,140px)] px-[clamp(20px,5vw,80px)] pt-32">
+    <section className="py-[clamp(80px,10vh,140px)] px-[clamp(20px,5vw,80px)] pt-32 page-enter" aria-labelledby="prog-title">
       <div className="max-w-[1400px] mx-auto">
         <span className="eyebrow">Programme</span>
-        <h2 className="sec-title">Quatre jours <em>d&apos;exception</em></h2>
-        <p className="text-[clamp(14px,1.4vw,16px)] max-w-[520px] leading-[1.8] mb-5" style={{ color: 'var(--text-muted)' }}>
+        <h1 id="prog-title" className="sec-title">Quatre jours <em>d&apos;exception</em></h1>
+        <p className="text-[clamp(14px,1.4vw,16px)] max-w-[520px] leading-[1.8] mb-5" style={{ color: 'var(--color-muted)' }}>
           Un programme dense pour les entrepreneurs, artisans, investisseurs et le grand public.
         </p>
 
-        <div className="flex gap-5 mb-14 flex-wrap">
-          <span className="flex items-center gap-2.5 text-[10px] tracking-[1px] uppercase"><span className="w-2.5 h-2.5 rounded-full bg-[#4ade80]" /><span style={{ color: 'var(--text-muted)' }}>Public</span></span>
-          <span className="flex items-center gap-2.5 text-[10px] tracking-[1px] uppercase"><span className="w-2.5 h-2.5 rounded-full bg-[#60a5fa]" /><span style={{ color: 'var(--text-muted)' }}>Pro / B2B</span></span>
-          <span className="flex items-center gap-2.5 text-[10px] tracking-[1px] uppercase"><span className="w-2.5 h-2.5 rounded-full bg-gold" /><span style={{ color: 'var(--text-muted)' }}>VIP</span></span>
+        <div className="flex gap-5 mb-14 flex-wrap" role="list" aria-label="Légende">
+          <span className="flex items-center gap-2.5 text-[10px] tracking-[1px] uppercase" role="listitem"><span className="w-2.5 h-2.5 rounded-full bg-[#4ade80]" /><span style={{ color: 'var(--color-muted)' }}>Public</span></span>
+          <span className="flex items-center gap-2.5 text-[10px] tracking-[1px] uppercase" role="listitem"><span className="w-2.5 h-2.5 rounded-full bg-[#60a5fa]" /><span style={{ color: 'var(--color-muted)' }}>Pro / B2B</span></span>
+          <span className="flex items-center gap-2.5 text-[10px] tracking-[1px] uppercase" role="listitem"><span className="w-2.5 h-2.5 rounded-full bg-gold" /><span style={{ color: 'var(--color-muted)' }}>VIP</span></span>
         </div>
 
-        <div className="space-y-0">
+        <div className="space-y-0" role="list" aria-label="Programme par jour">
           {days.map((day) => (
-            <div key={day.date}>
-              <div className="flex items-stretch border-b" style={{ borderColor: 'var(--border)' }}>
-                <div className="w-[280px] flex-shrink-0 py-10 pr-8 border-r" style={{ borderColor: 'var(--border)' }}>
+            <div key={day.date} role="listitem">
+              <div className="flex items-stretch border-b" style={{ borderColor: 'var(--color-border)' }}>
+                <div className="w-[280px] flex-shrink-0 py-10 pr-8 border-r" style={{ borderColor: 'var(--color-border)' }}>
                   <div className="flex items-baseline gap-3 mb-3">
-                    <span className="font-display text-[52px] font-bold leading-none" style={{ color: day.tagColor, opacity: 0.25 }}>{day.num}</span>
+                    <span className="font-display text-[52px] font-bold leading-none" style={{ color: day.tagColor, opacity: .25 }}>{day.num}</span>
                     <div>
-                      <span className="text-[10px] font-bold tracking-[2px] uppercase" style={{ color: 'var(--text-muted)' }}>{day.date} {day.month}</span>
+                      <span className="text-[10px] font-bold tracking-[2px] uppercase" style={{ color: 'var(--color-muted)' }}>{day.date} {day.month}</span>
                     </div>
                   </div>
-                  <h3 className="font-display text-[24px] font-bold leading-tight mb-3" style={{ color: 'var(--text-main)' }}>
+                  <h2 className="font-display text-[24px] font-bold leading-tight mb-3" style={{ color: 'var(--color-text)' }}>
                     {day.title}
                     <span className="text-gold-2"> {day.subtitle}</span>
-                  </h3>
-                  <span className="inline-block px-3 py-1 text-[8px] font-bold tracking-[2px] uppercase text-white mb-3" style={{ background: day.tagColor }}>
+                  </h2>
+                  <span className="inline-block px-3 py-1 text-[8px] font-bold tracking-[2px] uppercase text-white rounded-full mb-3" style={{ background: day.tagColor }}>
                     {day.tag}
                   </span>
-                  <p className="text-[13px] leading-[1.7]" style={{ color: 'var(--text-muted)' }}>{day.desc}</p>
+                  <p className="text-[13px] leading-[1.7]" style={{ color: 'var(--color-muted)' }}>{day.desc}</p>
                 </div>
 
                 <div className="flex-1">
                   {day.agenda.map((item, i) => (
-                    <div key={i} className="grid grid-cols-[70px_1fr_auto] items-center gap-4 py-4 px-6 border-b last:border-b-0 hover:bg-[rgba(200,155,60,.03)] transition-colors duration-300" style={{ borderColor: 'var(--border)' }}>
+                    <div key={i} className="grid grid-cols-[70px_1fr_auto] items-center gap-4 py-4 px-6 border-b last:border-b-0 hover:bg-[rgba(200,155,60,.03)] transition-colors duration-300" style={{ borderColor: 'var(--color-border)' }}>
                       <b className="text-[12px] font-semibold tracking-[1px] text-gold-2 tabular-nums">{item.time}</b>
-                      <span className="text-[13px] font-light" style={{ color: 'var(--text-main)' }}>{item.text}</span>
+                      <span className="text-[13px] font-light" style={{ color: 'var(--color-text)' }}>{item.text}</span>
                       <span className={`text-[8px] font-bold tracking-[1px] uppercase px-2.5 py-0.5 rounded-full whitespace-nowrap ${badgeStyles[item.badgeType]}`}>
                         {item.badge}
                       </span>

@@ -38,6 +38,37 @@ const config: Config = {
         display: ['Cormorant Garamond', 'Georgia', 'serif'],
         body: ['DM Sans', 'system-ui', 'sans-serif'],
       },
+      borderRadius: {
+        '4xl': '2rem',
+      },
+      spacing: {
+        '18': '4.5rem',
+        '22': '5.5rem',
+        '26': '6.5rem',
+        '30': '7.5rem',
+      },
+      transitionTimingFunction: {
+        'out-expo': 'cubic-bezier(.16, 1, .3, 1)',
+      },
+      keyframes: {
+        'fade-up': {
+          from: { opacity: '0', transform: 'translateY(24px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        'slide-in-right': {
+          from: { opacity: '0', transform: 'translateX(32px)' },
+          to: { opacity: '1', transform: 'translateX(0)' },
+        },
+        'scale-in': {
+          from: { opacity: '0', transform: 'scale(.95)' },
+          to: { opacity: '1', transform: 'scale(1)' },
+        },
+      },
+      animation: {
+        'fade-up': 'fade-up .7s cubic-bezier(.16,1,.3,1) forwards',
+        'slide-in-right': 'slide-in-right .7s cubic-bezier(.16,1,.3,1) forwards',
+        'scale-in': 'scale-in .5s cubic-bezier(.16,1,.3,1) forwards',
+      },
     },
   },
   plugins: [],

@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Presse',
+  description: 'Espace presse FÉCOA 2026. Accréditation officielle gratuite pour journalistes, photographes, vidéastes et créateurs de contenu.',
+}
 
 const pressFeatures = [
   'Accès toutes zones (sauf espaces VIP privés)',
@@ -19,25 +25,24 @@ const editorialAngles = [
 
 export default function PressePage() {
   return (
-    <section className="py-[clamp(80px,10vh,140px)] px-[clamp(20px,5vw,80px)] pt-32">
+    <section className="py-[clamp(80px,10vh,140px)] px-[clamp(20px,5vw,80px)] pt-32 page-enter" aria-labelledby="presse-title">
       <div className="max-w-[1400px] mx-auto">
         <span className="eyebrow">Presse & Médias</span>
-        <h2 className="sec-title">Espace <em>presse</em></h2>
-        <p className="text-[clamp(14px,1.4vw,16px)] max-w-[520px] leading-[1.8] mb-14" style={{ color: 'var(--text-muted)' }}>
+        <h1 id="presse-title" className="sec-title">Espace <em>presse</em></h1>
+        <p className="text-[clamp(14px,1.4vw,16px)] max-w-[520px] leading-[1.8] mb-14" style={{ color: 'var(--color-muted)' }}>
           Accréditation officielle gratuite pour journalistes, photographes, vidéastes et créateurs de contenu.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-[2px] border" style={{ borderColor: 'var(--border)' }}>
-          <div className="p-[clamp(28px,3vw,44px)] relative group" style={{ background: 'var(--bg-2)' }}>
-            <div className="absolute top-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 bg-gold" />
-            <h3 className="font-display text-[26px] font-bold mb-4" style={{ color: 'var(--text-main)' }}>Accréditation médias</h3>
-            <p className="text-[14px] mb-6 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="p-[clamp(28px,3vw,44px)] relative group rounded-xl card" role="article">
+            <h2 className="font-display text-[26px] font-bold mb-4" style={{ color: 'var(--color-text)' }}>Accréditation médias</h2>
+            <p className="text-[14px] mb-6 leading-relaxed" style={{ color: 'var(--color-muted)' }}>
               Journalistes, photographes, vidéastes et créateurs de contenu — accréditation officielle gratuite.
             </p>
-            <ul className="space-y-2.5 mb-8">
+            <ul className="space-y-2.5 mb-8" role="list">
               {pressFeatures.map(f => (
-                <li key={f} className="text-[13px] flex gap-2.5 items-start" style={{ color: 'var(--text-main)' }}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-gold mt-1.5 flex-shrink-0" />
+                <li key={f} className="text-[13px] flex gap-2.5 items-start" style={{ color: 'var(--color-text)' }}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold mt-1.5 flex-shrink-0" aria-hidden="true" />
                   {f}
                 </li>
               ))}
@@ -47,16 +52,15 @@ export default function PressePage() {
             </Link>
           </div>
 
-          <div className="p-[clamp(28px,3vw,44px)] relative group" style={{ background: 'var(--bg-2)' }}>
-            <div className="absolute top-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 bg-[#C89B3C]" />
-            <h3 className="font-display text-[26px] font-bold mb-4" style={{ color: 'var(--text-main)' }}>Angles éditoriaux</h3>
-            <p className="text-[14px] mb-6 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+          <div className="p-[clamp(28px,3vw,44px)] relative group rounded-xl card" role="article">
+            <h2 className="font-display text-[26px] font-bold mb-4" style={{ color: 'var(--color-text)' }}>Angles éditoriaux</h2>
+            <p className="text-[14px] mb-6 leading-relaxed" style={{ color: 'var(--color-muted)' }}>
               Nombreux angles pour les médias francophones, anglophones et africains.
             </p>
-            <ul className="space-y-2.5 mb-8">
+            <ul className="space-y-2.5 mb-8" role="list">
               {editorialAngles.map(a => (
-                <li key={a} className="text-[13px] flex gap-2.5 items-start" style={{ color: 'var(--text-main)' }}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-gold mt-1.5 flex-shrink-0" />
+                <li key={a} className="text-[13px] flex gap-2.5 items-start" style={{ color: 'var(--color-text)' }}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold mt-1.5 flex-shrink-0" aria-hidden="true" />
                   {a}
                 </li>
               ))}

@@ -8,12 +8,12 @@ export default function Ticker() {
   const duplicated = [...items, ...items]
 
   return (
-    <div className="overflow-hidden border-t border-b py-4.5" style={{ borderColor: 'var(--border)', background: 'var(--bg-2)' }}>
+    <div className="overflow-hidden border-t border-b py-4.5" style={{ borderColor: 'var(--color-border)', background: 'var(--color-bg-2)' }} aria-hidden="true">
       <div className="flex whitespace-nowrap animate-[ticker_28s_linear_infinite]">
         {duplicated.map((item, i) => (
-          <span key={i} className="text-[13px] font-medium tracking-[2px] px-8 flex items-center gap-8" style={{ color: 'var(--text-muted)' }}>
+          <span key={i} className="text-[13px] font-medium tracking-[2px] px-8 flex items-center gap-8" style={{ color: 'var(--color-muted)' }}>
             {item}
-            <span className="text-gold text-[6px]">◆</span>
+            <span className="text-gold text-[6px]" aria-hidden="true">◆</span>
           </span>
         ))}
       </div>
