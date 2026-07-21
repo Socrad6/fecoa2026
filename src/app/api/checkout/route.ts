@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
         subtotal,
         discount,
         total,
-        promoCode: promoCode?.toUpperCase() || null,
+        promoCode: typeof promoCode === 'string' ? promoCode.toUpperCase() : null,
         paymentMethod: method,
         items: { create: orderItems },
       },
