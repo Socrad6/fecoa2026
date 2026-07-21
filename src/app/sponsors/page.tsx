@@ -52,9 +52,9 @@ export default function SponsorsPage() {
           <div className="space-y-8">
             <div>
               <p className="text-[10px] font-semibold tracking-[3px] uppercase mb-4" style={{ color: 'var(--color-muted)' }}>Sponsors Platine — {availableSlots.platine} places disponibles</p>
-              <div className="flex gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 {Array.from({ length: availableSlots.platine }).map((_, i) => (
-                  <div key={i} className="flex-1 min-w-[130px] h-[80px] border border-dashed rounded-xl flex items-center justify-center text-[11px] font-medium tracking-[1.5px] cursor-pointer hover:bg-[rgba(200,155,60,.04)] hover:text-gold-2 hover:border-gold transition-all duration-300" style={{ background: 'var(--color-bg-2)', borderColor: 'var(--color-border)', color: 'var(--color-muted)' }}>
+                  <div key={i} className="min-w-0 h-[80px] border border-dashed rounded-xl flex items-center justify-center text-[11px] font-medium tracking-[1.5px] cursor-pointer hover:bg-[rgba(200,155,60,.04)] hover:text-gold-2 hover:border-gold transition-all duration-300" style={{ background: 'var(--color-bg-2)', borderColor: 'var(--color-border)', color: 'var(--color-muted)' }}>
                     + Votre logo ici
                   </div>
                 ))}
@@ -62,9 +62,9 @@ export default function SponsorsPage() {
             </div>
             <div>
               <p className="text-[10px] font-semibold tracking-[3px] uppercase mb-4" style={{ color: 'var(--color-muted)' }}>Sponsors Or — {availableSlots.or} places disponibles</p>
-              <div className="flex gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {Array.from({ length: availableSlots.or }).map((_, i) => (
-                  <div key={i} className="flex-1 min-w-[130px] h-[80px] border border-dashed rounded-xl flex items-center justify-center text-[11px] font-medium tracking-[1.5px] cursor-pointer hover:bg-[rgba(200,155,60,.04)] hover:text-gold-2 hover:border-gold transition-all duration-300" style={{ background: 'var(--color-bg-2)', borderColor: 'var(--color-border)', color: 'var(--color-muted)' }}>
+                  <div key={i} className="min-w-0 h-[80px] border border-dashed rounded-xl flex items-center justify-center text-[11px] font-medium tracking-[1.5px] cursor-pointer hover:bg-[rgba(200,155,60,.04)] hover:text-gold-2 hover:border-gold transition-all duration-300" style={{ background: 'var(--color-bg-2)', borderColor: 'var(--color-border)', color: 'var(--color-muted)' }}>
                     + Votre logo
                   </div>
                 ))}

@@ -73,10 +73,10 @@ export default function BilletteriePage() {
           {[{ key: 'select', num: '01', label: 'Sélection' }, { key: 'cart', num: '02', label: 'Panier' }, { key: 'payment', num: '03', label: 'Paiement' }].map(s => (
             <button key={s.key} role="tab" aria-selected={step === s.key}
               onClick={() => { if (s.key === 'select' || (s.key === 'cart' && totalItems > 0) || (s.key === 'payment' && totalItems > 0)) setStep(s.key as typeof step) }}
-              className={`flex-1 flex items-center gap-3 px-5 py-4 transition-all duration-300 ${step === s.key ? 'bg-gold text-navy' : 'hover:bg-[rgba(200,155,60,.04)]'}`}
+              className={`flex-1 flex items-center gap-1.5 sm:gap-3 px-3 sm:px-5 py-3 sm:py-4 transition-all duration-300 ${step === s.key ? 'bg-gold text-navy' : 'hover:bg-[rgba(200,155,60,.04)]'}`}
               style={step !== s.key ? { color: 'var(--color-muted)' } : {}}>
               <span className={`text-[10px] font-bold ${step === s.key ? 'text-navy' : 'text-gold'}`}>{s.num}</span>
-              <span className="text-[11px] font-semibold tracking-[1.5px] uppercase">{s.label}</span>
+              <span className="text-[10px] sm:text-[11px] font-semibold tracking-[1px] sm:tracking-[1.5px] uppercase">{s.label}</span>
             </button>
           ))}
         </div>

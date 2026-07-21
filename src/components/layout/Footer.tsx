@@ -1,6 +1,9 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { SITE } from '@/lib/site'
+import { useI18n } from '@/components/ui/I18nProvider'
 
 const kenteColors = ['#C89B3C', '#C0392B', '#1A7A3C', '#1A5276']
 
@@ -13,23 +16,25 @@ const socialPaths: Record<string, string> = {
 }
 
 const navItems = [
-  { label: 'L\'événement', href: '/#about' },
-  { label: 'Programme', href: '/programme' },
-  { label: 'Billetterie', href: '/billetterie' },
-  { label: 'Exposants', href: '/exposants' },
-  { label: 'Sponsors', href: '/sponsors' },
-  { label: 'Presse', href: '/presse' },
-  { label: 'Contact', href: '/contact' },
-]
-
-const billetterieItems = [
-  { label: 'Acheter un billet', href: '/billetterie' },
-  { label: 'Forfait VIP', href: '/billetterie' },
-  { label: 'Devenir exposant', href: '/exposants' },
-  { label: 'Devenir sponsor', href: '/sponsors' },
+  { key: 'about', href: '/#about' },
+  { key: 'programme', href: '/programme' },
+  { key: 'billetterie', href: '/billetterie' },
+  { key: 'exposants', href: '/exposants' },
+  { key: 'sponsors', href: '/sponsors' },
+  { key: 'presse', href: '/presse' },
+  { key: 'contact', href: '/contact' },
 ]
 
 export default function Footer() {
+  const { t, locale } = useI18n()
+
+  const billetterieItems = [
+    { label: t('hero.cta.tickets'), href: '/billetterie' },
+    { label: locale === 'fr' ? 'Forfait VIP' : 'VIP Package', href: '/billetterie' },
+    { label: locale === 'fr' ? 'Devenir exposant' : 'Become an exhibitor', href: '/exposants' },
+    { label: locale === 'fr' ? 'Devenir sponsor' : 'Become a sponsor', href: '/sponsors' },
+  ]
+
   return (
     <footer role="contentinfo" style={{ background: 'var(--color-bg)' }}>
       <div className="kente-bar" aria-hidden="true">
@@ -52,15 +57,15 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-[10px] tracking-[2px] uppercase mb-5" style={{ color: 'var(--color-muted)' }}>
-              Foire Économique et Culturelle Ouest-Africaine
+              {locale === 'fr' ? 'Foire Économique et Culturelle Ouest-Africaine' : 'West African Economic and Cultural Fair'}
             </p>
             <p className="text-[13px] leading-[1.8] max-w-[280px] mb-6" style={{ color: 'var(--color-muted)' }}>
-              Le rendez-vous incontournable des échanges entre le Canada et l&apos;Afrique de l&apos;Ouest.
+              {locale === 'fr' ? 'Le rendez-vous incontournable des échanges entre le Canada et l\'Afrique de l\'Ouest.' : 'The key event for exchanges between Canada and West Africa.'}
             </p>
             <div className="flex gap-1.5 flex-wrap mb-6">
               {[
-                { name: 'Sénégal', bg: '#1A7A3C' },
-                { name: 'Guinée', bg: '#C0392B' },
+                { name: locale === 'fr' ? 'Sénégal' : 'Senegal', bg: '#1A7A3C' },
+                { name: locale === 'fr' ? 'Guinée' : 'Guinea', bg: '#C0392B' },
                 { name: 'Mali', bg: '#c9900a' },
                 { name: 'Diaspora', bg: '#D52B1E' },
               ].map(n => (
@@ -92,14 +97,14 @@ export default function Footer() {
           <nav aria-label="Navigation">
             <h4 className="text-[10px] font-bold tracking-[3px] uppercase text-gold-2 mb-5 flex items-center gap-2">
               <span className="w-5 h-px bg-gold/30" aria-hidden="true" />
-              Navigation
+              {t('footer.event')}
             </h4>
             <ul className="space-y-2.5" role="list">
               {navItems.map(item => (
-                <li key={item.label}>
+                <li key={item.key}>
                   <Link href={item.href} className="text-[13px] hover:text-gold-2 transition-colors duration-300 flex items-center gap-2 group" style={{ color: 'var(--color-muted)' }}>
                     <span className="w-0 h-px bg-gold transition-all duration-300 group-hover:w-3" aria-hidden="true" />
-                    {item.label}
+                    {t('nav.' + item.key)}
                   </Link>
                 </li>
               ))}
@@ -110,7 +115,7 @@ export default function Footer() {
           <nav aria-label="Billetterie">
             <h4 className="text-[10px] font-bold tracking-[3px] uppercase text-gold-2 mb-5 flex items-center gap-2">
               <span className="w-5 h-px bg-gold/30" aria-hidden="true" />
-              Billetterie
+              {t('footer.participation')}
             </h4>
             <ul className="space-y-2.5" role="list">
               {billetterieItems.map(item => (
@@ -162,14 +167,14 @@ export default function Footer() {
         {/* Bottom */}
         <div className="flex justify-between items-center py-6 border-t flex-wrap gap-3" style={{ borderColor: 'var(--color-border)' }}>
           <span className="text-[11px]" style={{ color: 'var(--color-muted)', opacity: .6 }}>
-            © 2026 FÉCOA — Tous droits réservés.
+            © 2026 FÉCOA — {t('footer.rights')}
           </span>
           <div className="flex items-center gap-4 flex-wrap">
             <Link href="/mentions-legales" className="text-[11px] hover:text-gold-2 transition-colors" style={{ color: 'var(--color-muted)', opacity: .6 }}>Mentions légales</Link>
             <Link href="/politique-confidentialite" className="text-[11px] hover:text-gold-2 transition-colors" style={{ color: 'var(--color-muted)', opacity: .6 }}>Confidentialité</Link>
             <Link href="/cgv" className="text-[11px] hover:text-gold-2 transition-colors" style={{ color: 'var(--color-muted)', opacity: .6 }}>CGV</Link>
             <span className="text-[10px] tracking-[2px] uppercase" style={{ color: 'var(--color-muted)', opacity: .4 }}>{SITE.location}</span>
-            <span className="font-display text-[16px] font-bold tracking-[2px]" style={{ color: 'var(--gold)', opacity: .25 }}>#FÉCOA2026</span>
+            <span className="font-display text-[10px] tracking-[2px] uppercase" style={{ color: 'var(--color-muted)', opacity: .4 }}>#FÉCOA2026</span>
           </div>
         </div>
       </div>

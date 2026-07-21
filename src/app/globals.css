@@ -51,8 +51,7 @@
   --shadow-gold:      0 4px 20px rgba(200, 155, 60, .2);
   --shadow-gold-lg:   0 8px 40px rgba(200, 155, 60, .35);
 
-  --font-display:     'Cormorant Garamond', Georgia, serif;
-  --font-body:        'DM Sans', system-ui, -apple-system, sans-serif;
+
 
   --space-1: 4px;   --space-2: 8px;   --space-3: 12px;
   --space-4: 16px;  --space-5: 20px;  --space-6: 24px;

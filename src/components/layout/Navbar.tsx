@@ -5,15 +5,16 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useTheme } from '@/components/ui/ThemeProvider'
 import LangSwitcher from '@/components/ui/LangSwitcher'
+import { useI18n } from '@/components/ui/I18nProvider'
 
 const navLinks = [
-  { href: '/#about', label: 'L\'événement' },
-  { href: '/programme', label: 'Programme' },
-  { href: '/billetterie', label: 'Billetterie' },
-  { href: '/exposants', label: 'Exposants' },
-  { href: '/sponsors', label: 'Sponsors' },
-  { href: '/presse', label: 'Presse' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/#about', key: 'about' },
+  { href: '/programme', key: 'programme' },
+  { href: '/billetterie', key: 'billetterie' },
+  { href: '/exposants', key: 'exposants' },
+  { href: '/sponsors', key: 'sponsors' },
+  { href: '/presse', key: 'presse' },
+  { href: '/contact', key: 'contact' },
 ]
 
 export default function Navbar() {
@@ -21,6 +22,7 @@ export default function Navbar() {
   const [scrollProgress, setScrollProgress] = useState(0)
   const [mobileOpen, setMobileOpen] = useState(false)
   const { theme, toggle } = useTheme()
+  const { t } = useI18n()
 
   const onScroll = useCallback(() => {
     const y = window.scrollY
@@ -89,14 +91,14 @@ export default function Navbar() {
                   className="nav-pill px-3.5 py-2 text-[11px] font-medium tracking-[.12em] uppercase rounded-full transition-all duration-300 hover:bg-[rgba(200,155,60,.08)] hover:text-gold-2 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {link.label}
+                  {t('nav.' + link.key)}
                 </Link>
                 <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-gold transition-all duration-300 group-hover/nav:w-[60%] rounded-full" aria-hidden="true" />
               </li>
             ))}
             <li className="ml-2">
               <Link href="/billetterie" className="btn-gold !py-2.5 !px-6 !text-[10px] hover:shadow-[0_0_24px_rgba(200,155,60,.4)]">
-                Billets
+                {t('nav.billets')}
                 <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M7 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
               </Link>
             </li>
@@ -148,7 +150,7 @@ export default function Navbar() {
         role="dialog"
         aria-modal="true"
         aria-label="Menu mobile"
-        className={`fixed inset-0 top-[74px] z-40 flex flex-col items-center justify-center gap-8 transition-all duration-500 lg:hidden ${
+        className={`fixed inset-0 top-[72px] z-40 flex flex-col items-center justify-start gap-8 transition-all duration-500 lg:hidden overflow-y-auto py-12 ${
           theme === 'dark' ? 'bg-[rgba(6,21,36,.98)]' : 'bg-[rgba(250,249,247,.98)]'
         } ${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
       >
@@ -162,11 +164,11 @@ export default function Navbar() {
               onClick={() => setMobileOpen(false)}
               tabIndex={mobileOpen ? 0 : -1}
             >
-              {link.label}
+              {t('nav.' + link.key)}
             </Link>
           ))}
           <Link href="/billetterie" className="btn-gold mt-4" onClick={() => setMobileOpen(false)} tabIndex={mobileOpen ? 0 : -1}>
-            Acheter un billet
+            {t('hero.cta.tickets')}
           </Link>
           <span className="text-[11px] tracking-[3px] uppercase mt-6" style={{ color: 'var(--color-muted)' }}>
             17–20 Décembre 2026 · Montréal

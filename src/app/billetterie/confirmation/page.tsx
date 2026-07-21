@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
@@ -10,12 +10,17 @@ interface OrderData {
   tickets: { id: string; type: string; qrCode: string; status: string }[]
 }
 
-export default function TicketConfirmation() {
+function TicketConfirmationContent() {
   const searchParams = useSearchParams()
   const orderId = searchParams.get('order')
   const [order, setOrder] = useState<OrderData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (!orderId) { setError('Aucune commande trouvée'); setLoading(false); return }
@@ -91,8 +96,9 @@ export default function TicketConfirmation() {
                     <div key={ticket.id} className="p-4 rounded-lg border text-center" style={{ background: 'rgba(255,255,255,.02)', borderColor: 'var(--color-border-2)' }}>
                       <p className="text-[10px] font-bold tracking-[2px] uppercase mb-1" style={{ color: 'var(--color-muted)' }}>Billet {i + 1} sur {order.tickets.length}</p>
                       <p className="text-[14px] font-semibold mb-3" style={{ color: 'var(--color-text)' }}>{ticket.type}</p>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`${typeof window !== 'undefined' ? window.location.origin : ''}/api/verify?qr=${ticket.qrCode}`)}&bgcolor=ffffff&color=061524`}
+                        src={mounted ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`${window.location.origin}/api/verify?qr=${ticket.qrCode}`)}&bgcolor=ffffff&color=061524` : ''}
                         alt={`QR Code billet ${i + 1}`}
                         width={180}
                         height={180}
@@ -120,5 +126,22 @@ export default function TicketConfirmation() {
         ) : null}
       </div>
     </section>
+  )
+}
+
+export default function TicketConfirmation() {
+  return (
+    <Suspense fallback={
+      <section className="py-[clamp(70px,9vh,128px)] px-[clamp(16px,5vw,80px)] pt-32 min-h-screen" style={{ background: 'var(--color-bg)' }}>
+        <div className="max-w-[600px] mx-auto text-center">
+          <div className="py-20">
+            <div className="w-12 h-12 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p style={{ color: 'var(--color-muted)' }}>Chargement de la commande...</p>
+          </div>
+        </div>
+      </section>
+    }>
+      <TicketConfirmationContent />
+    </Suspense>
   )
 }

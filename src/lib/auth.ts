@@ -58,6 +58,9 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
 
     return user as AuthUser | null
   } catch (err) {
+    if (err instanceof Error && (err.message.includes('Dynamic server usage') || err.name === 'DynamicServerError')) {
+      throw err
+    }
     logger.error(ctx, 'getCurrentUser error', err)
     return null
   }

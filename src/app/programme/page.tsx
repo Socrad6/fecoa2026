@@ -92,8 +92,8 @@ export default function ProgrammePage() {
         <div className="space-y-0" role="list" aria-label="Programme par jour">
           {days.map((day) => (
             <div key={day.date} role="listitem">
-              <div className="flex items-stretch border-b" style={{ borderColor: 'var(--color-border)' }}>
-                <div className="w-[280px] flex-shrink-0 py-10 pr-8 border-r" style={{ borderColor: 'var(--color-border)' }}>
+              <div className="flex flex-col lg:flex-row lg:items-stretch border-b" style={{ borderColor: 'var(--color-border)' }}>
+                <div className="w-full lg:w-[280px] flex-shrink-0 py-8 lg:py-10 pr-0 lg:pr-8 border-b lg:border-b-0 lg:border-r" style={{ borderColor: 'var(--color-border)' }}>
                   <div className="flex items-baseline gap-3 mb-3">
                     <span className="font-display text-[52px] font-bold leading-none" style={{ color: day.tagColor, opacity: .25 }}>{day.num}</span>
                     <div>
@@ -110,7 +110,7 @@ export default function ProgrammePage() {
                   <p className="text-[13px] leading-[1.7]" style={{ color: 'var(--color-muted)' }}>{day.desc}</p>
                 </div>
 
-                <div className="flex-1">
+                <div className="flex-1 py-4 lg:py-0">
                   {day.agenda.map((item, i) => (
                     <div key={i} className="grid grid-cols-[70px_1fr_auto] items-center gap-4 py-4 px-6 border-b last:border-b-0 hover:bg-[rgba(200,155,60,.03)] transition-colors duration-300" style={{ borderColor: 'var(--color-border)' }}>
                       <b className="text-[12px] font-semibold tracking-[1px] text-gold-2 tabular-nums">{item.time}</b>

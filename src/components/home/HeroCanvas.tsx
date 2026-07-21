@@ -53,7 +53,8 @@ export default function HeroCanvas() {
       lines.forEach(l => {
         l.a += l.da; if (l.a > .12 || l.a < 0) l.da *= -1
         ctx!.beginPath()
-        ctx!.moveTo(l.x1, l.y1); ctx!.lineTo(l.x2, l.y2)
+        ctx!.moveTo((l.x1 / 2000) * W, (l.y1 / 1200) * H)
+        ctx!.lineTo((l.x2 / 2000) * W, (l.y2 / 1200) * H)
         ctx!.strokeStyle = `rgba(200,155,60,${l.a})`
         ctx!.lineWidth = .5; ctx!.stroke()
       })
