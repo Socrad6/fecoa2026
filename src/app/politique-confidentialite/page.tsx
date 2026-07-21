@@ -61,7 +61,7 @@ export default function PolitiqueConfidentialite() {
               <li><strong>Accès :</strong> obtenir une copie de vos données personnelles</li>
               <li><strong>Rectification :</strong> corriger vos données inexactes</li>
               <li><strong>Suppression :</strong> demander la suppression de vos données</li>
-              <li><strong>Opposition :</strong) vous opposer au traitement de vos données</li>
+              <li><strong>Opposition :</strong> vous opposer au traitement de vos données</li>
               <li><strong>Portabilité :</strong> recevoir vos données dans un format structuré</li>
             </ul>
             <p className="mt-2">Pour exercer ces droits, contactez-nous à <span className="text-gold-2">privacy@fecoa2026.ca</span>.</p>
