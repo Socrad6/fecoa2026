@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/ui/ThemeProvider'
 import { I18nProvider } from '@/components/ui/I18nProvider'
@@ -33,15 +33,6 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
   },
   alternates: { canonical: 'https://fecoa2026.vercel.app' },
-}
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#061524' },
-    { media: '(prefers-color-scheme: light)', color: '#faf9f7' },
-  ],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
